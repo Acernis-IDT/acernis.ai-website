@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acernis – Kontrast-Analyse</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; color: #eee; font-family: system-ui, sans-serif; padding: 32px; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+  .meta { font-size: 13px; color: #888; margin-bottom: 36px; }
+
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #555; margin-bottom: 16px; margin-top: 40px; }
+
+  .row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+
+  .swatch {
+    border-radius: 12px;
+    padding: 20px 24px;
+    flex: 1;
+    min-width: 260px;
+  }
+  .swatch-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px; opacity: .55; }
+  .swatch-body { font-size: 14px; line-height: 1.7; }
+  .swatch-body .title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .swatch-body .sub { margin-bottom: 4px; }
+  .swatch-body .muted { }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 100px; margin-top: 14px;
+  }
+  .badge.fail { background: rgba(239,68,68,.15); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+  .badge.warn { background: rgba(251,146,60,.15); color: #fb923c; border: 1px solid rgba(251,146,60,.3); }
+  .badge.pass { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .dot-fail { background: #f87171; }
+  .dot-warn { background: #fb923c; }
+  .dot-pass { background: #4ade80; }
+
+  .ratio-label { font-size: 12px; font-weight: 600; margin-top: 10px; opacity: .6; }
+
+  hr { border: none; border-top: 1px solid #222; margin: 32px 0; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 16px; }
+  .summary-item {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .color-chip { width: 32px; height: 32px; border-radius: 6px; flex-shrink: 0; border: 1px solid #333; }
+  .summary-text { flex: 1; }
+  .summary-name { font-size: 13px; font-weight: 600; color: #ddd; }
+  .summary-hex { font-size: 11px; color: #666; font-family: monospace; }
+  .summary-usage { font-size: 11px; color: #888; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<h1>Acernis — Farbkontrast-Analyse</h1>
+<p class="meta">WCAG 2.1 Anforderungen: AA Normal Text ≥ 4.5:1 · AA Großtext ≥ 3:1 · AAA ≥ 7:1</p>
+
+<div class="section-title">⚠️ Problematische Kombinationen</div>
+
+<div class="row">
+  <!-- Muted text on surface -->
+  <div class="swatch" style="background:#0D130D;">
+    <div class="swatch-label">Text-Muted auf Surface (#0D130D)</div>
+    <div class="swatch-body">
+      <div class="title" style="color:#F0FDF4;">BIM-Based Foundation</div>
+      <div class="sub" style="color:#9CA3AF;">Structured, standardized site data</div>
+      <div class="muted" style="color:#6B7280;">version controlled and maintained over time</div>
+    </div>
+    <div class="ratio-label">#6B7280 → Kontrast: ~4.3:1</div>
+    <div class="badge fail"><span class="dot dot-fail"></span>Knapp unter AA (4.5:1)</div>
+  </div>
+
+  <!-- Muted text on surface-2 -->
+  <div class="swatch" style="background:#131F13;">
+    <div class="swatch-label">Text-Muted auf Surface-2 (#131F13)</div>
+    <div class="swatch-body">
+      <div class="title" style="color:#F0FDF4;">Use Case 01</div>
+      <div class="sub" style="color:#9CA3AF;">Coverage Planning</div>
+      <div class="muted" style="color:#6B7280;">More accurate coverage with fewer antennas</div>
+    </div>
+    <div class="ratio-label">#6B7280 → Kontrast: ~3.8:1</div>
+    <div class="badge fail"><span class="dot dot-fail"></span>Unter AA — Fails WCAG</div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Accent text on surface -->
+  <div class="swatch" style="background:#0D130D;">
+    <div class="swatch-label">Accent-Text auf Surface (#0D130D)</div>
+    <div class="swatch-body">
+      <div class="title" style="color:#0FA876;">The Acernis approach</div>
+      <div class="sub" style="color:#0FA876;">eyebrow labels / icon text</div>
+    </div>
+    <div class="ratio-label">#0FA876 → Kontrast: ~6.8:1</div>
+    <div class="badge pass"><span class="dot dot-pass"></span>Passes AA ✓</div>
+  </div>
+
+  <!-- Secondary text on surface -->
+  <div class="swatch" style="background:#0D130D;">
+    <div class="swatch-label">Text-Secondary auf Surface (#0D130D)</div>
+    <div class="swatch-body">
+      <div class="title" style="color:#F0FDF4;">AI-powered telecom</div>
+      <div class="sub" style="color:#9CA3AF;">Turn network strategy into field-ready deployment instructions — instantly</div>
+    </div>
+    <div class="ratio-label">#9CA3AF → Kontrast: ~8.2:1</div>
+    <div class="badge pass"><span class="dot dot-pass"></span>Passes AAA ✓</div>
+  </div>
+</div>
+
+<hr>
+
+<div class="section-title">🎨 Aktuelle Farbpalette</div>
+<div class="summary-grid">
+  <div class="summary-item">
+    <div class="color-chip" style="background:#06080A;"></div>
+    <div class="summary-text">
+      <div class="summary-name">Background</div>
+      <div class="summary-hex">#06080A</div>
+      <div class="summary-usage">Haupt-Hintergrund</div>
+    </div>
+    <div class="badge pass">OK</div>
+  </div>
+  <div class="summary-item">
+    <div class="color-chip" style="background:#0D130D;"></div>
+    <div class="summary-text">
+      <div class="summary-name">Surface</div>
+      <div class="summary-hex">#0D130D</div>
+      <div class="summary-usage">Karten-Hintergrund</div>
+    </div>
+    <div class="badge warn">Grünstich</div>
+  </div>
+  <div class="summary-item">
+    <div class="color-chip" style="background:#131F13;"></div>
+    <div class="summary-text">
+      <div class="summary-name">Surface-2</div>
+      <div class="summary-hex">#131F13</div>
+      <div class="summary-usage">Sekundäre Karten</div>
+    </div>
+    <div class="badge warn">Grünstich</div>
+  </div>
+  <div class="summary-item">
+    <div class="color-chip" style="background:#9CA3AF;"></div>
+    <div class="summary-text">
+      <div class="summary-name">Text-Secondary</div>
+      <div class="summary-hex">#9CA3AF</div>
+      <div class="summary-usage">Body-Text, Beschreibungen</div>
+    </div>
+    <div class="badge pass">Gut ✓</div>
+  </div>
+  <div class="summary-item">
+    <div class="color-chip" style="background:#6B7280;"></div>
+    <div class="summary-text">
+      <div class="summary-name">Text-Muted</div>
+      <div class="summary-hex">#6B7280</div>
+      <div class="summary-usage">Labels, Hints, Subtitles</div>
+    </div>
+    <div class="badge fail">⚠ Problem</div>
+  </div>
+  <div class="summary-item">
+    <div class="color-chip" style="background:#0FA876;"></div>
+    <div class="summary-text">
+      <div class="summary-name">Accent-Text</div>
+      <div class="summary-hex">#0FA876</div>
+      <div class="summary-usage">Eyebrows, Icons, Links</div>
+    </div>
+    <div class="badge pass">Gut ✓</div>
+  </div>
+</div>
+
+<hr>
+
+<div class="section-title">📌 Kernproblem</div>
+<div style="background:#1a1a1a; border-radius:12px; padding:20px 24px; font-size:14px; line-height:1.8; color:#bbb; border-left: 3px solid #f87171;">
+  <strong style="color:#fff;">Das Problem ist nicht der Dark Mode an sich</strong> — sondern die Kombination aus <strong style="color:#fb923c;">warm-grünen Kartenoberflächen</strong> (#0D130D, #131F13) mit einem <strong style="color:#fb923c;">kühlen blaustichigen Grau</strong> (#6B7280). Diese Kombination erzeugt optisch weniger Kontrast als die Zahl allein anzeigt, weil die Grüntöne das Grau visuell "einsaugen". Außerdem liegt #6B7280 knapp unter dem WCAG AA-Grenzwert (4.3:1 statt 4.5:1).
+</div>
+
+</body>
+</html>

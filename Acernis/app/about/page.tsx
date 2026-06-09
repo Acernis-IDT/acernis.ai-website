@@ -1,0 +1,85 @@
+"use client";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#07644D" }}>
+      <span className="w-4 h-px inline-block" style={{ backgroundColor: "#07644D" }} />
+      {children}
+    </p>
+  );
+}
+
+export default function AboutPage() {
+  const { t } = useLanguage();
+  const a = t.about;
+
+  return (
+    <main className="pt-24">
+      {/* Hero */}
+      <section className="relative py-28 px-6 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(7,100,77,0.08) 0%, transparent 60%)" }} />
+        <div className="relative max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <Eyebrow>{a.hero.eyebrow}</Eyebrow>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight" style={{ color: "#F0FDF4" }}>{a.hero.title}</h1>
+          </div>
+          <div className="flex flex-col gap-5">
+            {a.hero.paragraphs.map((p: string, i: number) => (
+              <p key={i} className="text-base leading-relaxed" style={{ color: "#B0BBBF" }}>{p}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Belief */}
+      <section className="py-24 px-6" style={{ backgroundColor: "#0D130D", borderTop: "1px solid #1C2C1C" }}>
+        <div className="max-w-3xl mx-auto text-center">
+          <Eyebrow>{a.mission.eyebrow}</Eyebrow>
+          <h2 className="text-3xl md:text-4xl font-bold mb-8" style={{ color: "#F0FDF4" }}>{a.mission.title}</h2>
+          <p className="text-base leading-relaxed" style={{ color: "#B0BBBF" }}>{a.mission.body}</p>
+        </div>
+      </section>
+
+      {/* Team */}
+      <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <Eyebrow>{a.team.eyebrow}</Eyebrow>
+            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#F0FDF4" }}>{a.team.title}</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {a.team.members.map((member: { name: string; role: string }, i: number) => (
+              <div key={i} className="rounded-xl p-6 text-center" style={{ backgroundColor: "#0D130D", border: "1px solid #1C2C1C" }}>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold mb-4 mx-auto" style={{ backgroundColor: "#0A3020", color: "#07644D" }}>
+                  {member.name.split(" ").map((n) => n[0]).join("")}
+                </div>
+                <h3 className="text-sm font-semibold mb-1" style={{ color: "#F0FDF4" }}>{member.name}</h3>
+                <p className="text-xs" style={{ color: "#8A9EA0" }}>{member.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24 px-6 relative overflow-hidden" style={{ backgroundColor: "#0D130D", borderTop: "1px solid #1C2C1C" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(7,100,77,0.07) 0%, transparent 70%)" }} />
+        <div className="relative max-w-xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-8" style={{ color: "#F0FDF4" }}>{t.home.cta.title}</h2>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold rounded-lg transition-all"
+            style={{ backgroundColor: "#07644D", color: "#F0FDF4" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#055035"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#07644D"; }}
+          >
+            {t.home.cta.cta1} <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
+    </main>
+  );
+}

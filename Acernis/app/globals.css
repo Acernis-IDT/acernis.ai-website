@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: #06080A;
+  --color-surface: #0D130D;
+  --color-surface-2: #131F13;
+  --color-border: #1C2C1C;
+  --color-accent: #07644D;
+  --color-accent-dim: #055035;
+  --color-accent-muted: #0A3020;
+  --color-accent-text: #0FA876;
+  --color-text-primary: #F0FDF4;
+  --color-text-secondary: #B0BBBF;
+  --color-text-muted: #8A9EA0;
+
+  --font-sans: var(--font-plus-jakarta);
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: #06080A;
+  color: #F0FDF4;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: #055035; color: #F0FDF4; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #06080A; }
+::-webkit-scrollbar-thumb { background: #1C2C1C; border-radius: 3px; }
+
+/* ── Card hover glow ── */
+.card-glow {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.card-glow:hover {
+  border-color: rgba(7, 100, 77, 0.38) !important;
+  box-shadow: 0 0 0 1px rgba(7, 100, 77, 0.10), inset 0 1px 0 rgba(7, 100, 77, 0.08);
+}
+
+/* ── Button press micro-interaction ── */
+.btn-press {
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+              color 0.15s ease, transform 0.1s ease;
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+@keyframes orb-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(60px, -40px) scale(1.05); }
+  66% { transform: translate(-30px, 50px) scale(0.95); }
+}
+
+@keyframes orb-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-50px, 30px) scale(1.08); }
+  66% { transform: translate(40px, -60px) scale(0.92); }
+}
+
+@keyframes orb-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 40px) scale(1.06); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes splash-logo-in {
+  0%   { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes splash-out {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-orb-1 { animation: orb-1 28s ease-in-out infinite; }
+.animate-orb-2 { animation: orb-2 34s ease-in-out infinite; }
+.animate-orb-3 { animation: orb-3 22s ease-in-out infinite; }
+
+.animate-fade-in-up { animation: fade-in-up 0.7s ease-out forwards; }
+.animate-fade-in    { animation: fade-in 0.6s ease-out forwards; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* ── Ken Burns — cinematic slow zoom + drift ── */
+@keyframes ken-burns {
+  0%   { transform: scale(1.10) translate(0%,    0%);    }
+  35%  { transform: scale(1.15) translate(-1.2%, -0.7%); }
+  70%  { transform: scale(1.12) translate(0.9%,  -1.1%); }
+  100% { transform: scale(1.10) translate(0%,    0%);    }
+}
+.animate-ken-burns {
+  animation: ken-burns 26s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform;
+}
