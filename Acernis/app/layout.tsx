@@ -14,7 +14,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Acernis – Driving Autonomous Networks",
-  description: "BIM-captured site intelligence today – agentic AI rollout automation tomorrow. The foundation for autonomous telco rollouts.",
+  description: "BIM-captured site intelligence today, agentic AI rollout automation tomorrow. The foundation for autonomous telecom rollouts.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
