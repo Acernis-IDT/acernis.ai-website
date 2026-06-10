@@ -287,10 +287,13 @@ export default function HomePage() {
             src="/Acernis%20Video%20ZoomOut_v3.mp4"
             muted
             playsInline
+            autoPlay
             preload="auto"
             onLoadedMetadata={() => {
               const v = bgVideoRef.current;
-              if (v) v.currentTime = 0.001;
+              if (!v) return;
+              // iOS requires play() to activate the video element before seeking works
+              v.play().then(() => { v.pause(); v.currentTime = 0.001; }).catch(() => { v.currentTime = 0.001; });
             }}
             style={{
               position: "absolute",

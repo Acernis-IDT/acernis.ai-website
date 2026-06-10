@@ -38,9 +38,9 @@ export default function Navbar() {
           style={{ backgroundColor: "#1C1C1E", height: 36, borderBottom: "1px solid rgba(255,255,255,0.05)" }}
         >
           <div className="flex items-center gap-2.5">
-            <span style={{ color: "#8A8A8E", fontSize: 12 }}>News</span>
-            <span style={{ color: "#3A3A3E", fontSize: 12 }}>|</span>
-            <span style={{ color: "#D1D1D6", fontSize: 12 }}>{ANNOUNCEMENT.text}</span>
+            <span className="hidden sm:inline" style={{ color: "#8A8A8E", fontSize: 12 }}>News</span>
+            <span className="hidden sm:inline" style={{ color: "#3A3A3E", fontSize: 12 }}>|</span>
+            <span className="hidden sm:inline" style={{ color: "#D1D1D6", fontSize: 12 }}>{ANNOUNCEMENT.text}</span>
             <Link
               href={ANNOUNCEMENT.href}
               className="inline-flex items-center gap-1 transition-colors"
