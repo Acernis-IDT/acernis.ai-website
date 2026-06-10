@@ -285,6 +285,7 @@ export default function HomePage() {
           <video
             ref={bgVideoRef}
             src="/Acernis%20Video%20ZoomOut_v3.mp4"
+            poster="/Pictire_Backup%20Start%20Screen.png"
             muted
             playsInline
             autoPlay
