@@ -278,6 +278,8 @@ export default function HomePage() {
             position: "sticky",
             top: 0,
             height: "100vh",
+            width: "100vw",
+            left: 0,
             overflow: "hidden",
           }}
         >
@@ -324,7 +326,7 @@ export default function HomePage() {
               className="font-bold leading-none mb-8"
               style={{
                 letterSpacing: "-0.04em",
-                fontSize: "clamp(3rem, 7.5vw, 6rem)",
+                fontSize: "clamp(2rem, 4.2vw, 3.5rem)",
                 color: "#F0FDF4",
                 maxWidth: "900px",
               }}
@@ -453,22 +455,20 @@ export default function HomePage() {
       </section>
 
       {/* ── PLATFORM INTRO ── */}
-      <section className="relative overflow-hidden" style={{ backgroundColor: "#FFFFFF", borderTop: "1px solid #E5E7EB", minHeight: "480px" }}>
-        <NetworkBackground />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.72) 50%, rgba(255,255,255,0.88) 100%)" }} />
+      <section className="relative overflow-hidden" style={{ backgroundColor: "#0A0A0A", minHeight: "480px" }}>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-28">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-16 items-stretch">
             <div className="md:col-span-3 flex flex-col justify-center">
               <Eyebrow>{h.platformIntro.eyebrow}</Eyebrow>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}>{h.platformIntro.title}</h2>
-              <p className="text-base leading-relaxed mb-6" style={{ color: "#4B5563" }}>{h.platformIntro.body}</p>
-              <p className="text-sm font-semibold leading-relaxed" style={{ color: "#07644D" }}>{h.platformIntro.closing}</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: "#F0FDF4", textWrap: "balance" } as React.CSSProperties}>{h.platformIntro.title}</h2>
+              <p className="text-base leading-relaxed mb-6" style={{ color: "#9CA3AF" }}>{h.platformIntro.body}</p>
+              <p className="text-sm font-semibold leading-relaxed" style={{ color: "#0FA876" }}>{h.platformIntro.closing}</p>
             </div>
             <div className="md:col-span-2 flex items-center">
               <div className="relative md:pl-10 w-full">
-                <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px" style={{ backgroundColor: "rgba(7,100,77,0.3)" }} />
+                <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px" style={{ backgroundColor: "rgba(7,100,77,0.4)" }} />
                 <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#07644D" }}>{h.platformIntro.futureTitle}</p>
-                <p className="text-base leading-relaxed" style={{ color: "#4B5563" }}>{h.platformIntro.futureBody}</p>
+                <p className="text-base leading-relaxed" style={{ color: "#9CA3AF" }}>{h.platformIntro.futureBody}</p>
               </div>
             </div>
           </div>
@@ -608,7 +608,7 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest" style={{ color: "#6B7280" }}>
               <span className="w-4 h-px inline-block" style={{ backgroundColor: "#6B7280" }} />
-              success KPIs
+              SUCCESS KPIs
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3">

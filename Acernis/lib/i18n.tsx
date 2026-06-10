@@ -137,7 +137,7 @@ const translations = {
       },
       kpis: {
         items: [
-          { value: "10–15%", label: "cost reduction in network rollouts within the first year" },
+          { value: "10-15%", label: "cost reduction in network rollouts within the first year" },
           { value: "2", label: "weeks to showcase your preferred use case" },
           { value: "10+", label: "API integrations to your existing tools and systems" },
         ],

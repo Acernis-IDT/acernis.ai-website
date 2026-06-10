@@ -137,6 +137,28 @@ export default function ContactPage() {
             </div>
 
 
+            {/* Founder card */}
+            <div className="rounded-xl p-6 flex flex-col gap-4" style={{ backgroundColor: "#0D130D", border: "1px solid #1C2C1C" }}>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ backgroundColor: "#0A3020", color: "#07644D" }}>
+                  CR
+                </div>
+                <div>
+                  <p className="font-semibold text-sm" style={{ color: "#F0FDF4" }}>Charles Ricke</p>
+                  <p className="text-xs" style={{ color: "#8A9EA0" }}>Founder &amp; CEO</p>
+                </div>
+              </div>
+              <a
+                href="#"
+                className="w-full py-2.5 text-sm font-medium rounded-lg transition-all text-center flex items-center justify-center gap-2"
+                style={{ backgroundColor: "#131F13", border: "1px solid rgba(7,100,77,0.3)", color: "#0FA876" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#0A3020"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#131F13"; }}
+              >
+                Directly book a meeting
+              </a>
+            </div>
+
             {/* Address */}
             <div className="rounded-xl p-6 flex-1" style={{ backgroundColor: "#0D130D", border: "1px solid #1C2C1C" }}>
               <div className="flex items-center gap-2 mb-4">
