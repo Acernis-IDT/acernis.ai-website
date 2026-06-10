@@ -1,17 +1,19 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @theme inline {
-  --color-bg: #06080A;
-  --color-surface: #0D130D;
-  --color-surface-2: #131F13;
-  --color-border: #1C2C1C;
+  --color-bg: #FFFFFF;
+  --color-surface: #0D0D0D;
+  --color-surface-2: #161616;
+  --color-border: #E5E7EB;
+  --color-border-dark: #1F2937;
   --color-accent: #07644D;
   --color-accent-dim: #055035;
   --color-accent-muted: #0A3020;
   --color-accent-text: #0FA876;
-  --color-text-primary: #F0FDF4;
-  --color-text-secondary: #B0BBBF;
-  --color-text-muted: #8A9EA0;
+  --color-text-primary: #0A0A0A;
+  --color-text-on-dark: #F0FDF4;
+  --color-text-secondary: #4B5563;
+  --color-text-muted: #6B7280;
 
   --font-sans: var(--font-plus-jakarta);
   --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
@@ -22,8 +24,8 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #06080A;
-  color: #F0FDF4;
+  background-color: #FFFFFF;
+  color: #0A0A0A;
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -31,16 +33,16 @@ body {
 ::selection { background: #055035; color: #F0FDF4; }
 
 ::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #06080A; }
-::-webkit-scrollbar-thumb { background: #1C2C1C; border-radius: 3px; }
+::-webkit-scrollbar-track { background: #F5F7F5; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
 
 /* ── Card hover glow ── */
 .card-glow {
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 .card-glow:hover {
-  border-color: rgba(7, 100, 77, 0.38) !important;
-  box-shadow: 0 0 0 1px rgba(7, 100, 77, 0.10), inset 0 1px 0 rgba(7, 100, 77, 0.08);
+  border-color: rgba(7, 100, 77, 0.5) !important;
+  box-shadow: 0 0 0 1px rgba(7, 100, 77, 0.12), inset 0 1px 0 rgba(7, 100, 77, 0.08);
 }
 
 /* ── Button press micro-interaction ── */
@@ -102,7 +104,21 @@ body {
 .delay-400 { animation-delay: 0.4s; }
 .delay-500 { animation-delay: 0.5s; }
 
-/* ── Ken Burns — cinematic slow zoom + drift ── */
+/* ── Infinite horizontal marquee ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 48s linear infinite;
+  width: max-content;
+  display: flex;
+}
+.animate-marquee-wrap:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* ── Ken Burns – cinematic slow zoom + drift ── */
 @keyframes ken-burns {
   0%   { transform: scale(1.10) translate(0%,    0%);    }
   35%  { transform: scale(1.15) translate(-1.2%, -0.7%); }

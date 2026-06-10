@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navbar />
           <div className="flex-1">{children}</div>
           <Footer />
-          {/* Cinematic film grain — fixed, GPU-safe, never on scrolling containers */}
+          {/* Cinematic film grain – fixed, GPU-safe, never on scrolling containers */}
           <div
             aria-hidden="true"
             style={{

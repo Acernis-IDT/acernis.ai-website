@@ -1,21 +1,67 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { ArrowRight, Check, Database, Zap, Brain, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 
 
+const INVESTORS_BASE = [
+  { name: "Gerhard Mack",       role: "Former CTO, Vodafone Germany",                    photo: "/picture_Gerhard Mack.jpg" },
+  { name: "Arndt Rautenberg",   role: "Founder, Rautenberg & Co – TelCo M&A",            photo: "/picture_Arndt Rautenberg.png" },
+  { name: "Dido Blankenburg",   role: "Former SVP Corp. Development, Deutsche Telekom",  photo: "/picture_Dido Blankenburg.png" },
+  { name: "Niek Jan Van Damme", role: "Former Executive Board Member, Deutsche Telekom", photo: "/picture_Niek Jan Van Damme.png" },
+  { name: "Kai Uwe Ricke",      role: "Former CEO, Deutsche Telekom",                    photo: "/picture_Kai Uwe Ricke.png" },
+  { name: "Nicolas Drouet",     role: "Former Head of Presales, Ericsson – Seasoned CPO", photo: "/picture_Nicolas Drouet.png" },
+];
+
+function InvestorCard({ name, role, photo, quote }: typeof INVESTORS[0]) {
+  return (
+    <div
+      style={{
+        width: 300,
+        flexShrink: 0,
+        borderRadius: 16,
+        padding: "24px",
+        backgroundColor: "#111111",
+        border: "1px solid #1F2937",
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <div style={{ width: 52, height: 52, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "1px solid #1F2937" }}>
+          <Image
+            src={photo}
+            alt={name}
+            width={52}
+            height={52}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", filter: "grayscale(100%)" }}
+          />
+        </div>
+        <div>
+          <p style={{ color: "#F0FDF4", fontWeight: 600, fontSize: 14, marginBottom: 3 }}>{name}</p>
+          <p style={{ color: "#0FA876", fontSize: 11, lineHeight: 1.45 }}>{role}</p>
+        </div>
+      </div>
+      <p style={{ color: "#9CA3AF", fontSize: 13, lineHeight: 1.7, fontStyle: "italic" }}>
+        &ldquo;{quote}&rdquo;
+      </p>
+    </div>
+  );
+}
+
 const LOGOS = [
-  { src: "/Vodafone_logo.png",      alt: "Vodafone",      w: 120, h: 52 },
-  { src: "/VirginMediaO2_logo.png", alt: "Virgin Media O2", w: 120, h: 52 },
-  { src: "/GFTD_logo.png",          alt: "GfTD",          w: 120, h: 52 },
-  { src: "/EKS_logo.png",           alt: "EKS",           w: 80,  h: 36 },
-  { src: "/Cablex_Logo.svg.png",    alt: "Cablex",        w: 120, h: 52 },
-  { src: "/insyte_logo.png",        alt: "Insyte",        w: 120, h: 52 },
-  { src: "/SPIE_logo.svg.png",      alt: "SPIE",          w: 80,  h: 36 },
-  { src: "/Animo_logo.png",         alt: "Animo",         w: 120, h: 52 },
+  { src: "/Vodafone_logo_grey.png",      alt: "Vodafone",      w: 120, h: 52 },
+  { src: "/VirginMediaO2_logo_grey.png", alt: "Virgin Media O2", w: 120, h: 52 },
+  { src: "/GFTD_logo_grey.png",          alt: "GfTD",          w: 120, h: 52 },
+  { src: "/EKS_logo_grey.png",           alt: "EKS",           w: 80,  h: 36 },
+  { src: "/Cablex_Logo.svg_grey.png",    alt: "Cablex",        w: 120, h: 52 },
+  { src: "/insyte_logo_grey.png",        alt: "Insyte",        w: 120, h: 52 },
+  { src: "/SPIE_logo.svg_grey.png",      alt: "SPIE",          w: 80,  h: 36 },
+  { src: "/Animo_logo_grey.png",         alt: "Animo",         w: 120, h: 52 },
 ];
 
 function NetworkBackground() {
@@ -64,7 +110,7 @@ function NetworkBackground() {
           const dy = nodes[i].y - nodes[j].y;
           const d = Math.sqrt(dx * dx + dy * dy);
           if (d < 155) {
-            ctx.strokeStyle = `rgba(7,100,77,${(1 - d / 155) * 0.28})`;
+            ctx.strokeStyle = `rgba(7,100,77,${(1 - d / 155) * 0.18})`;
             ctx.lineWidth = 0.8;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -78,9 +124,9 @@ function NetworkBackground() {
         const fn = nodes[p.from], tn = nodes[p.to];
         const px = fn.x + (tn.x - fn.x) * p.t;
         const py = fn.y + (tn.y - fn.y) * p.t;
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = "rgba(15,168,118,0.9)";
-        ctx.fillStyle = "rgba(15,168,118,0.85)";
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = "rgba(7,100,77,0.5)";
+        ctx.fillStyle = "rgba(7,100,77,0.55)";
         ctx.beginPath();
         ctx.arc(px, py, 2.2, 0, Math.PI * 2);
         ctx.fill();
@@ -91,10 +137,10 @@ function NetworkBackground() {
 
       nodes.forEach((n) => {
         n.phase += n.speed;
-        const glow = 0.35 + Math.sin(n.phase) * 0.28;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = `rgba(15,168,118,${glow})`;
-        ctx.fillStyle = `rgba(15,168,118,${glow})`;
+        const glow = 0.18 + Math.sin(n.phase) * 0.12;
+        ctx.shadowBlur = 3;
+        ctx.shadowColor = `rgba(7,100,77,${glow})`;
+        ctx.fillStyle = `rgba(7,100,77,${glow + 0.08})`;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fill();
@@ -121,9 +167,9 @@ function AntennaIcon() {
     <motion.div className="mb-7 flex-shrink-0"
       animate={{
         filter: [
-          "drop-shadow(0 0 2px rgba(15,168,118,0.2))",
-          "drop-shadow(0 0 12px rgba(15,168,118,0.75))",
-          "drop-shadow(0 0 2px rgba(15,168,118,0.2))",
+          "drop-shadow(0 0 2px rgba(7,100,77,0.2))",
+          "drop-shadow(0 0 12px rgba(7,100,77,0.75))",
+          "drop-shadow(0 0 2px rgba(7,100,77,0.2))",
         ],
         scale: [1, 1.06, 1],
       }}
@@ -139,10 +185,10 @@ function ChecklistIcon() {
     <motion.div className="mb-7 flex-shrink-0"
       animate={{
         filter: [
-          "drop-shadow(0 0 0px rgba(15,168,118,0))",
-          "drop-shadow(0 0 18px rgba(15,168,118,0.95))",
-          "drop-shadow(0 0 6px rgba(15,168,118,0.4))",
-          "drop-shadow(0 0 0px rgba(15,168,118,0))",
+          "drop-shadow(0 0 0px rgba(7,100,77,0))",
+          "drop-shadow(0 0 18px rgba(7,100,77,0.95))",
+          "drop-shadow(0 0 6px rgba(7,100,77,0.4))",
+          "drop-shadow(0 0 0px rgba(7,100,77,0))",
         ],
         scale: [1, 1.14, 1.04, 1],
       }}
@@ -158,9 +204,9 @@ function BrainIcon() {
     <motion.div className="mb-7 flex-shrink-0"
       animate={{
         filter: [
-          "drop-shadow(0 0 3px rgba(15,168,118,0.25))",
-          "drop-shadow(0 0 14px rgba(15,168,118,0.85))",
-          "drop-shadow(0 0 3px rgba(15,168,118,0.25))",
+          "drop-shadow(0 0 3px rgba(7,100,77,0.25))",
+          "drop-shadow(0 0 14px rgba(7,100,77,0.85))",
+          "drop-shadow(0 0 3px rgba(7,100,77,0.25))",
         ],
       }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -172,123 +218,205 @@ function BrainIcon() {
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="inline-flex items-center gap-2 text-xs font-medium mb-4" style={{ color: "#0FA876" }}>
-      <span className="w-1 h-1 rounded-full inline-block" style={{ backgroundColor: "#0FA876" }} />
+    <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#07644D" }}>
+      <span className="w-4 h-px inline-block" style={{ backgroundColor: "#07644D" }} />
       {children}
     </p>
   );
 }
 
 export default function HomePage() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const h = t.home;
   const [expandedUC, setExpandedUC] = useState<number | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [videoClicked, setVideoClicked] = useState(false);
-  const heroContainerRef = useRef<HTMLDivElement>(null);
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const [deviceVideoOpacity, setDeviceVideoOpacity] = useState(1);
+  const deviceVideoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    const video = heroVideoRef.current;
-    const container = heroContainerRef.current;
-    if (!video || !container) return;
-    const handleScroll = () => {
-      const rect = container.getBoundingClientRect();
-      const scrollable = container.offsetHeight - window.innerHeight;
-      if (scrollable <= 0 || !video.duration) return;
-      const progress = Math.max(0, Math.min(1, -rect.top / scrollable));
-      video.currentTime = progress * video.duration;
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+  const handleDeviceVideoTimeUpdate = useCallback(() => {
+    const v = deviceVideoRef.current;
+    if (v && v.duration && v.currentTime > v.duration - 0.5) {
+      setDeviceVideoOpacity(0);
+    }
+  }, []);
+
+  const handleDeviceVideoEnded = useCallback(() => {
+    const v = deviceVideoRef.current;
+    if (!v) return;
+    v.currentTime = 0;
+    v.play().catch(() => {});
+    setTimeout(() => setDeviceVideoOpacity(1), 150);
   }, []);
 
   return (
     <main>
-      {/* ── HERO (scroll-scrubbed video) ── */}
-      <div ref={heroContainerRef} style={{ height: "300vh" }}>
-        <section className="sticky top-0 relative h-screen flex flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-20">
-          {/* Video background — scrubbed by scroll */}
-          <video
-            ref={heroVideoRef}
-            src="/3D Video.mp4"
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ opacity: 0.42 }}
-          />
+      {/* ── HERO ── */}
+      <section
+        className="relative flex flex-col overflow-hidden"
+        style={{ backgroundColor: "#06080A", minHeight: "100vh" }}
+      >
+        {/* Background: orbs + grid */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+          <div className="animate-orb-1 absolute rounded-full" style={{ width: 700, height: 700, top: "-15%", left: "-10%", background: "radial-gradient(circle, rgba(7,100,77,0.18) 0%, transparent 70%)", filter: "blur(80px)" }} />
+          <div className="animate-orb-2 absolute rounded-full" style={{ width: 600, height: 600, bottom: "-10%", right: "-5%", background: "radial-gradient(circle, rgba(7,100,77,0.12) 0%, transparent 70%)", filter: "blur(80px)" }} />
+          <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(28,44,28,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(28,44,28,0.10) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+        </div>
 
-          {/* Dark gradient overlay */}
-          <div className="absolute inset-0 pointer-events-none" style={{
-            background: "linear-gradient(to bottom, rgba(6,8,10,0.5) 0%, rgba(6,8,10,0.25) 40%, rgba(6,8,10,0.3) 65%, rgba(6,8,10,0.97) 100%)"
-          }} />
+        {/* Text block – centered */}
+        <div className="relative z-10 pt-36 pb-10 px-6 md:px-16 max-w-4xl mx-auto w-full text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className="font-bold leading-tight mb-6"
+            style={{
+              letterSpacing: "-0.03em",
+              fontSize: "clamp(2rem, 5vw, 4rem)",
+              color: "#F0FDF4",
+            }}
+          >
+            {lang === "de" ? (
+              <>Die <span style={{ color: "#0FA876" }}>KI-gestützte</span> Infrastrukturplattform<br />für Telco-Rollouts</>
+            ) : lang === "fr" ? (
+              <>La plateforme d&apos;infrastructure télécom<br /><span style={{ color: "#0FA876" }}>propulsée par l&apos;IA</span></>
+            ) : (
+              <>The <span style={{ color: "#0FA876" }}>AI-powered</span> telecom<br />infrastructure platform</>
+            )}
+          </motion.h1>
 
-          {/* Orb overlays */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
-            <div className="animate-orb-1 absolute rounded-full" style={{ width: 700, height: 700, top: "-15%", left: "-10%", background: "radial-gradient(circle, rgba(7,100,77,0.18) 0%, transparent 70%)", filter: "blur(80px)" }} />
-            <div className="animate-orb-2 absolute rounded-full" style={{ width: 600, height: 600, bottom: "-10%", right: "-5%", background: "radial-gradient(circle, rgba(7,100,77,0.12) 0%, transparent 70%)", filter: "blur(80px)" }} />
-            <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(28,44,28,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(28,44,28,0.12) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-          </div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-lg md:text-xl max-w-xl leading-relaxed mb-10 mx-auto"
+            style={{ color: "#B0BBBF" }}
+          >
+            {h.hero.body}
+          </motion.p>
 
-          {/* Text block */}
-          <div className="relative z-10 text-center max-w-4xl mx-auto">
-            <h1 className="animate-fade-in-up font-bold leading-tight mb-6" style={{ letterSpacing: "-0.03em", fontSize: "clamp(1.5rem, 4.2vw, 3.5rem)" }}>
-              <span className="block" style={{ color: "#F0FDF4" }}>
-                The <span style={{ color: "#0FA876" }}>AI-powered</span> telecom
-              </span>
-              <span className="block" style={{ color: "#F0FDF4" }}>
-                infrastructure platform
-              </span>
-            </h1>
-
-            <p className="animate-fade-in-up delay-100 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10" style={{ color: "#B0BBBF" }}>
-              {h.hero.body}
-            </p>
-
-            <div className="animate-fade-in-up delay-200 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/contact"
-                className="btn-press inline-flex items-center gap-2 px-7 py-4 text-sm font-semibold rounded-lg"
-                style={{ backgroundColor: "#07644D", color: "#F0FDF4" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#055035"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#07644D"; }}
-              >
-                {h.hero.cta1} <ArrowRight size={16} />
-              </Link>
-              <Link
-                href="/case-study"
-                className="btn-press inline-flex items-center gap-2 px-7 py-4 text-sm font-medium rounded-lg"
-                style={{ color: "#B0BBBF", border: "1px solid #1C2C1C" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#F0FDF4"; (e.currentTarget as HTMLElement).style.borderColor = "#0FA876"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#B0BBBF"; (e.currentTarget as HTMLElement).style.borderColor = "#1C2C1C"; }}
-              >
-                {h.hero.cta2}
-              </Link>
-            </div>
-          </div>
-
-          {/* Scroll cue */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2" style={{ color: "#8A9EA0" }}>
-            <p className="text-xs uppercase tracking-widest">Scroll</p>
-            <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Link
+              href="/contact"
+              className="btn-press inline-flex items-center gap-2 px-7 py-4 text-sm font-semibold rounded-lg"
+              style={{ backgroundColor: "#07644D", color: "#F0FDF4" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#055035"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#07644D"; }}
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 3v10M4 9l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </motion.div>
-          </div>
-        </section>
-      </div>
+              {h.hero.cta1} <ArrowRight size={16} />
+            </Link>
+            <Link
+              href="/case-study"
+              className="btn-press inline-flex items-center gap-2 px-7 py-4 text-sm font-medium rounded-lg"
+              style={{ color: "#B0BBBF", border: "1px solid rgba(28,44,28,0.9)" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#F0FDF4"; (e.currentTarget as HTMLElement).style.borderColor = "#0FA876"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#B0BBBF"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(28,44,28,0.9)"; }}
+            >
+              {h.hero.cta2}
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Device mockup – tilted screen with autoplay video */}
+        <div className="relative z-10 flex-1 flex items-end justify-center px-4 md:px-12 overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, y: 70 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              width: "100%",
+              maxWidth: "960px",
+              transform: "perspective(1000px) rotateX(14deg) rotateY(-8deg) rotateZ(2deg)",
+              transformOrigin: "center bottom",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {/* Screen frame */}
+            <div
+              style={{
+                borderRadius: "14px 14px 0 0",
+                border: "1px solid rgba(15,168,118,0.28)",
+                borderBottom: "none",
+                overflow: "hidden",
+                boxShadow:
+                  "0 0 0 1px rgba(7,100,77,0.06), " +
+                  "0 -8px 40px rgba(7,100,77,0.18), " +
+                  "0 40px 80px rgba(0,0,0,0.7)",
+                background: "#060A06",
+              }}
+            >
+              {/* Browser chrome */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "10px 16px",
+                  borderBottom: "1px solid rgba(15,168,118,0.14)",
+                  background: "rgba(8,13,8,0.95)",
+                }}
+              >
+                <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "rgba(255,95,87,0.75)" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "rgba(255,189,46,0.75)" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "rgba(40,202,65,0.75)" }} />
+                <div
+                  style={{
+                    marginLeft: 12,
+                    height: 20,
+                    width: 220,
+                    borderRadius: 4,
+                    background: "rgba(7,100,77,0.07)",
+                    border: "1px solid rgba(15,168,118,0.12)",
+                  }}
+                />
+              </div>
+
+              {/* Video area */}
+              <div style={{ position: "relative", aspectRatio: "16/9" }}>
+                <video
+                  ref={deviceVideoRef}
+                  src="/3D Video_v2.mp4"
+                  muted
+                  playsInline
+                  autoPlay
+                  onTimeUpdate={handleDeviceVideoTimeUpdate}
+                  onEnded={handleDeviceVideoEnded}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                    opacity: deviceVideoOpacity,
+                    transition: "opacity 0.45s ease",
+                  }}
+                />
+                {/* Bottom vignette so it fades into the page bg */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    background:
+                      "linear-gradient(to bottom, transparent 55%, rgba(6,10,6,0.65) 100%)",
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* ── LOGO STRIP ── */}
-      <section className="py-12 px-6" style={{ backgroundColor: "#0D130D", borderTop: "1px solid #1C2C1C", borderBottom: "1px solid #1C2C1C" }}>
+      <section className="py-12 px-6" style={{ backgroundColor: "#F8FAF8", borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 sm:gap-6 items-center justify-items-center">
             {LOGOS.map((logo) => (
-              <div key={logo.alt} className="w-full flex items-center justify-center" style={{ opacity: 0.7 }}>
+              <div key={logo.alt} className="w-full flex items-center justify-center">
                 <Image
                   src={logo.src}
                   alt={logo.alt}
@@ -303,22 +431,22 @@ export default function HomePage() {
       </section>
 
       {/* ── PLATFORM INTRO ── */}
-      <section className="relative overflow-hidden" style={{ borderTop: "1px solid #1C2C1C", minHeight: "480px" }}>
+      <section className="relative overflow-hidden" style={{ backgroundColor: "#FFFFFF", borderTop: "1px solid #E5E7EB", minHeight: "480px" }}>
         <NetworkBackground />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(6,8,10,0.90) 0%, rgba(6,8,10,0.72) 50%, rgba(6,8,10,0.90) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.72) 50%, rgba(255,255,255,0.88) 100%)" }} />
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-28">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-16 items-stretch">
             <div className="md:col-span-3 flex flex-col justify-center">
               <Eyebrow>{h.platformIntro.eyebrow}</Eyebrow>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: "#F0FDF4", textWrap: "balance" } as React.CSSProperties}>{h.platformIntro.title}</h2>
-              <p className="text-base leading-relaxed mb-6" style={{ color: "#B0BBBF" }}>{h.platformIntro.body}</p>
-              <p className="text-sm font-semibold leading-relaxed" style={{ color: "#0FA876" }}>{h.platformIntro.closing}</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}>{h.platformIntro.title}</h2>
+              <p className="text-base leading-relaxed mb-6" style={{ color: "#4B5563" }}>{h.platformIntro.body}</p>
+              <p className="text-sm font-semibold leading-relaxed" style={{ color: "#07644D" }}>{h.platformIntro.closing}</p>
             </div>
             <div className="md:col-span-2 flex items-center">
               <div className="relative md:pl-10 w-full">
                 <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px" style={{ backgroundColor: "rgba(7,100,77,0.3)" }} />
                 <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#07644D" }}>{h.platformIntro.futureTitle}</p>
-                <p className="text-base leading-relaxed" style={{ color: "#B0BBBF" }}>{h.platformIntro.futureBody}</p>
+                <p className="text-base leading-relaxed" style={{ color: "#4B5563" }}>{h.platformIntro.futureBody}</p>
               </div>
             </div>
           </div>
@@ -326,77 +454,72 @@ export default function HomePage() {
       </section>
 
       {/* ── SOLUTION ── */}
-      <section className="py-28 px-6">
+      <section className="py-28 px-6" style={{ borderTop: "1px solid #E5E7EB" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <Eyebrow>{h.solution.eyebrow}</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#F0FDF4", textWrap: "balance" } as React.CSSProperties}>{h.solution.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}>{h.solution.title}</h2>
           </div>
 
           <div className="flex flex-col md:flex-row">
-            {/* Card 1: BIM Foundation */}
-            <div className="card-glow rounded-2xl p-8 flex-1 flex flex-col items-center text-center" style={{ backgroundColor: "#0D130D", border: "1px solid #1C2C1C" }}>
+            <div className="card-glow rounded-2xl p-8 flex-1 flex flex-col items-center text-center" style={{ backgroundColor: "#0D0D0D", border: "1px solid #1F2937" }}>
               <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-8" style={{ backgroundColor: "#0A3020", color: "#0FA876", border: "1px solid rgba(7,100,77,0.3)" }}>{h.solution.card1Badge}</span>
               <AntennaIcon />
               <h3 className="text-lg font-bold mb-3" style={{ color: "#F0FDF4" }}>{h.solution.card1Title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "#B0BBBF" }}>{h.solution.card1Body}</p>
+              <p className="text-sm leading-relaxed" style={{ color: "#9CA3AF" }}>{h.solution.card1Body}</p>
             </div>
 
-            {/* Arrow 1 */}
             <div className="flex items-center justify-center self-center flex-shrink-0 py-6 md:py-0 md:px-4">
               <div className="flex flex-col items-center gap-2">
-                <span className="text-xs italic" style={{ color: "#8A9EA0" }}>{h.solution.arrow1Label}</span>
+                <span className="text-xs italic font-medium" style={{ color: "#0A0A0A" }}>{h.solution.arrow1Label}</span>
                 <svg className="hidden md:block" width="36" height="14" viewBox="0 0 36 14" fill="none">
-                  <line x1="0" y1="7" x2="28" y2="7" stroke="#374151" strokeWidth="1.5" />
-                  <polyline points="24,3 32,7 24,11" fill="none" stroke="#374151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="0" y1="7" x2="28" y2="7" stroke="#07644D" strokeWidth="2" />
+                  <polyline points="24,3 32,7 24,11" fill="none" stroke="#07644D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <svg className="md:hidden" width="14" height="32" viewBox="0 0 14 32" fill="none">
-                  <line x1="7" y1="0" x2="7" y2="24" stroke="#374151" strokeWidth="1.5" />
-                  <polyline points="3,20 7,28 11,20" fill="none" stroke="#374151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="7" y1="0" x2="7" y2="24" stroke="#07644D" strokeWidth="2" />
+                  <polyline points="3,20 7,28 11,20" fill="none" stroke="#07644D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
             </div>
 
-            {/* Card 2: Automation Use Cases */}
-            <div className="card-glow rounded-2xl p-8 flex-1 flex flex-col items-center text-center" style={{ backgroundColor: "#0D130D", border: "1px solid #1C2C1C" }}>
+            <div className="card-glow rounded-2xl p-8 flex-1 flex flex-col items-center text-center" style={{ backgroundColor: "#0D0D0D", border: "1px solid #1F2937" }}>
               <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-8" style={{ backgroundColor: "#0A3020", color: "#0FA876", border: "1px solid rgba(7,100,77,0.3)" }}>{h.solution.card2Badge}</span>
               <ChecklistIcon />
               <h3 className="text-lg font-bold mb-3" style={{ color: "#F0FDF4" }}>{h.solution.card2Title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "#B0BBBF" }}>{h.solution.card2Body}</p>
+              <p className="text-sm leading-relaxed" style={{ color: "#9CA3AF" }}>{h.solution.card2Body}</p>
             </div>
 
-            {/* Arrow 2 */}
             <div className="flex items-center justify-center self-center flex-shrink-0 py-6 md:py-0 md:px-4">
               <div className="flex flex-col items-center gap-2">
-                <span className="text-xs italic" style={{ color: "#8A9EA0" }}>{h.solution.arrow2Label}</span>
+                <span className="text-xs italic font-medium" style={{ color: "#0A0A0A" }}>{h.solution.arrow2Label}</span>
                 <svg className="hidden md:block" width="36" height="14" viewBox="0 0 36 14" fill="none">
-                  <line x1="0" y1="7" x2="28" y2="7" stroke="#374151" strokeWidth="1.5" />
-                  <polyline points="24,3 32,7 24,11" fill="none" stroke="#374151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="0" y1="7" x2="28" y2="7" stroke="#07644D" strokeWidth="2" />
+                  <polyline points="24,3 32,7 24,11" fill="none" stroke="#07644D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <svg className="md:hidden" width="14" height="32" viewBox="0 0 14 32" fill="none">
-                  <line x1="7" y1="0" x2="7" y2="24" stroke="#374151" strokeWidth="1.5" />
-                  <polyline points="3,20 7,28 11,20" fill="none" stroke="#374151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="7" y1="0" x2="7" y2="24" stroke="#07644D" strokeWidth="2" />
+                  <polyline points="3,20 7,28 11,20" fill="none" stroke="#07644D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
             </div>
 
-            {/* Card 3: AI-Driven Workflows */}
-            <div className="card-glow rounded-2xl p-8 flex-1 flex flex-col items-center text-center" style={{ backgroundColor: "#0D130D", border: "1px solid rgba(7,100,77,0.2)", borderTop: "1px solid rgba(7,100,77,0.35)" }}>
+            <div className="card-glow rounded-2xl p-8 flex-1 flex flex-col items-center text-center" style={{ backgroundColor: "#0D0D0D", border: "1px solid rgba(7,100,77,0.25)", borderTop: "1px solid rgba(7,100,77,0.4)" }}>
               <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-8" style={{ backgroundColor: "rgba(7,100,77,0.08)", color: "#0FA876", border: "1px solid rgba(7,100,77,0.25)" }}>{h.solution.card3Badge}</span>
               <BrainIcon />
               <h3 className="text-lg font-bold mb-3" style={{ color: "#F0FDF4" }}>{h.solution.card3Title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "#B0BBBF" }}>{h.solution.card3Body}</p>
+              <p className="text-sm leading-relaxed" style={{ color: "#9CA3AF" }}>{h.solution.card3Body}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── USE CASES ── */}
-      <section className="py-28 px-6" style={{ backgroundColor: "#0D130D", borderTop: "1px solid #1C2C1C" }}>
+      <section className="py-28 px-6" style={{ backgroundColor: "#F5F7F5", borderTop: "1px solid #E5E7EB" }}>
         <div className="max-w-3xl mx-auto">
           <div className="mb-14">
             <Eyebrow>{h.useCasesSection.eyebrow}</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-bold leading-tight" style={{ color: "#F0FDF4" }}>{h.useCasesSection.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight" style={{ color: "#0A0A0A" }}>{h.useCasesSection.title}</h2>
           </div>
 
           <div className="flex flex-col gap-3">
@@ -406,7 +529,7 @@ export default function HomePage() {
                 <div
                   key={i}
                   className="rounded-xl overflow-hidden"
-                  style={{ backgroundColor: "#0D130D", border: `1px solid ${isOpen ? "rgba(7,100,77,0.3)" : "#1C2C1C"}`, transition: "border-color 0.2s" }}
+                  style={{ backgroundColor: "#0D0D0D", border: `1px solid ${isOpen ? "rgba(7,100,77,0.4)" : "#1F2937"}`, transition: "border-color 0.2s" }}
                 >
                   <button
                     className="w-full flex items-center gap-4 p-6 text-left"
@@ -415,16 +538,16 @@ export default function HomePage() {
                     <span className="text-base font-mono font-bold w-10 flex-shrink-0" style={{ color: "#0FA876" }}>{uc_item.number}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-base font-semibold" style={{ color: "#F0FDF4" }}>{uc_item.title}</p>
-                      <p className="text-sm mt-0.5" style={{ color: "#8A9EA0" }}>{uc_item.short}</p>
+                      <p className="text-sm mt-0.5" style={{ color: "#9CA3AF" }}>{uc_item.short}</p>
                     </div>
                     {isOpen
                       ? <ChevronUp size={18} style={{ color: "#07644D", flexShrink: 0 }} />
-                      : <ChevronDown size={18} style={{ color: "#8A9EA0", flexShrink: 0 }} />
+                      : <ChevronDown size={18} style={{ color: "#6B7280", flexShrink: 0 }} />
                     }
                   </button>
 
                   {isOpen && (
-                    <div className="px-6 pb-6" style={{ borderTop: "1px solid #1C2C1C" }}>
+                    <div className="px-6 pb-6" style={{ borderTop: "1px solid #1F2937" }}>
                       <p className="text-sm leading-relaxed mt-4 mb-5" style={{ color: "#B0BBBF" }}>{uc_item.body}</p>
                       <div className="flex flex-col gap-2.5">
                         {uc_item.points.map((point, j) => (
@@ -446,12 +569,12 @@ export default function HomePage() {
       </section>
 
       {/* ── VIDEO ── */}
-      <section className="py-24 px-6" style={{ borderTop: "1px solid #1C2C1C" }}>
+      <section className="py-24 px-6" style={{ borderTop: "1px solid #E5E7EB" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <Eyebrow>{h.videoSection.eyebrow}</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-tight" style={{ color: "#F0FDF4", textWrap: "balance" } as React.CSSProperties}>{h.videoSection.title}</h2>
-            <p className="text-base" style={{ color: "#B0BBBF" }}>{h.videoSection.subtitle}</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-tight" style={{ color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}>{h.videoSection.title}</h2>
+            <p className="text-base" style={{ color: "#4B5563" }}>{h.videoSection.subtitle}</p>
           </div>
 
           <div>
@@ -459,26 +582,24 @@ export default function HomePage() {
               className="w-full overflow-hidden"
               style={{
                 borderRadius: "12px",
-                border: "1px solid rgba(255,255,255,0.06)",
-                boxShadow: "0 24px 60px rgba(0,0,0,0.5), 0 0 80px rgba(7,100,77,0.07)",
+                border: "1px solid #1F2937",
+                boxShadow: "0 24px 60px rgba(0,0,0,0.10), 0 0 80px rgba(7,100,77,0.04)",
               }}
             >
-              {/* Browser chrome */}
-              <div className="flex items-center gap-1.5 px-4 py-3" style={{ backgroundColor: "#131F13", borderBottom: "1px solid #1C2C1C" }}>
+              <div className="flex items-center gap-1.5 px-4 py-3" style={{ backgroundColor: "#111111", borderBottom: "1px solid #1F2937" }}>
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#FF5F57" }} />
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#FFBD2E" }} />
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#28CA41" }} />
-                <div className="ml-3 h-4 rounded" style={{ backgroundColor: "#0D130D", width: "160px" }} />
+                <div className="ml-3 h-4 rounded" style={{ backgroundColor: "#1A1A1A", width: "160px" }} />
               </div>
 
-              {/* Video area */}
               <div
                 className="relative w-full cursor-pointer"
-                style={{ aspectRatio: "16/9", backgroundColor: "#080D08" }}
+                style={{ aspectRatio: "16/9", backgroundColor: "#0A0A0A" }}
                 onClick={() => setVideoClicked(true)}
               >
                 <div className="absolute inset-0" style={{
-                  backgroundImage: "linear-gradient(rgba(7,100,77,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(7,100,77,0.07) 1px, transparent 1px)",
+                  backgroundImage: "linear-gradient(rgba(7,100,77,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(7,100,77,0.05) 1px, transparent 1px)",
                   backgroundSize: "64px 64px",
                 }} />
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -508,8 +629,11 @@ export default function HomePage() {
       </section>
 
       {/* ── KPIs ── */}
-      <section className="py-24 px-6" style={{ borderTop: "1px solid #1C2C1C" }}>
+      <section className="py-20 px-6" style={{ backgroundColor: "#F5F7F5", borderTop: "1px solid #E5E7EB" }}>
         <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <Eyebrow>Success KPIs</Eyebrow>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3">
             {h.kpis.items.map((item, i) => (
               <div key={i} className="relative">
@@ -518,25 +642,22 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.95, delay: i * 0.18, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col items-center text-center px-8 py-12"
+                  className="flex flex-col items-center text-center px-8 py-10"
                 >
                   <span
                     className="block text-6xl md:text-7xl font-bold mb-5 leading-none tracking-tight"
-                    style={{
-                      color: "#0FA876",
-                      textShadow: "0 0 24px rgba(15,168,118,0.8), 0 0 60px rgba(15,168,118,0.35)",
-                    }}
+                    style={{ color: "#07644D" }}
                   >
                     {item.value}
                   </span>
-                  <p className="text-sm leading-relaxed max-w-[200px]" style={{ color: "#B0BBBF" }}>
+                  <p className="text-sm leading-relaxed max-w-[200px]" style={{ color: "#4B5563" }}>
                     {item.label}
                   </p>
                 </motion.div>
                 {i < h.kpis.items.length - 1 && (
                   <>
-                    <div className="md:hidden h-px w-3/4 mx-auto" style={{ backgroundColor: "#1C2C1C" }} />
-                    <div className="hidden md:block absolute right-0 inset-y-12 w-px" style={{ backgroundColor: "#1C2C1C" }} />
+                    <div className="md:hidden h-px w-3/4 mx-auto" style={{ backgroundColor: "#E5E7EB" }} />
+                    <div className="hidden md:block absolute right-0 inset-y-12 w-px" style={{ backgroundColor: "#E5E7EB" }} />
                   </>
                 )}
               </div>
@@ -545,11 +666,45 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── INVESTORS ── */}
+      <section style={{ backgroundColor: "#0A0A0A", borderTop: "1px solid #1F2937", borderBottom: "1px solid #1F2937", paddingTop: 80, paddingBottom: 80, overflow: "hidden" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          style={{ textAlign: "center", marginBottom: 52, padding: "0 24px" }}
+        >
+          <p style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 600, color: "#0FA876", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>
+            <span style={{ width: 16, height: 1, backgroundColor: "#0FA876", display: "inline-block" }} />
+            {h.investors.eyebrow}
+          </p>
+          <h2 style={{ color: "#F0FDF4", fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+            {h.investors.title}
+          </h2>
+        </motion.div>
+
+        <div
+          className="animate-marquee-wrap"
+          style={{
+            overflow: "hidden",
+            WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+            maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+          }}
+        >
+          <div className="animate-marquee" style={{ gap: 20, paddingLeft: 20 }}>
+            {[...INVESTORS_BASE, ...INVESTORS_BASE].map((inv, i) => (
+              <InvestorCard key={i} {...inv} quote={h.investorQuotes[i % INVESTORS_BASE.length]} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
-      <section className="py-32 px-6 relative overflow-hidden" style={{ borderTop: "1px solid #1C2C1C" }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(7,100,77,0.15) 0%, transparent 70%)" }} />
+      <section className="py-32 px-6 relative overflow-hidden" style={{ borderTop: "1px solid #E5E7EB" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(7,100,77,0.06) 0%, transparent 70%)" }} />
         <div className="relative max-w-2xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-10 leading-tight" style={{ color: "#F0FDF4", textWrap: "balance" } as React.CSSProperties}>{h.cta.title}</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-10 leading-tight" style={{ color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}>{h.cta.title}</h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/contact"
@@ -565,37 +720,32 @@ export default function HomePage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-24 px-6" style={{ borderTop: "1px solid #1C2C1C" }}>
+      <section className="py-24 px-6" style={{ backgroundColor: "#F5F7F5", borderTop: "1px solid #E5E7EB" }}>
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="mb-14">
             <Eyebrow>{h.faq.eyebrow}</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#F0FDF4" }}>{h.faq.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#0A0A0A" }}>{h.faq.title}</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 items-start">
             {[h.faq.items.slice(0, Math.ceil(h.faq.items.length / 2)), h.faq.items.slice(Math.ceil(h.faq.items.length / 2))].map((col, colIdx) => (
-              <div key={colIdx} className="flex flex-col gap-3">
+              <div key={colIdx} style={{ borderTop: "1px solid #D1D5DB" }}>
                 {col.map((item, idx) => {
                   const i = colIdx === 0 ? idx : Math.ceil(h.faq.items.length / 2) + idx;
                   const isOpen = expandedFaq === i;
                   return (
-                    <div
-                      key={i}
-                      className="rounded-xl overflow-hidden transition-all"
-                      style={{ backgroundColor: "#0D130D", border: `1px solid ${isOpen ? "rgba(7,100,77,0.3)" : "#1C2C1C"}` }}
-                    >
+                    <div key={i} style={{ borderBottom: "1px solid #D1D5DB" }}>
                       <button
-                        className="w-full flex items-center gap-3 px-5 py-4 text-left"
+                        className="w-full flex items-center gap-4 py-5 text-left"
                         onClick={() => setExpandedFaq(isOpen ? null : i)}
                       >
-                        <span className="flex-1 text-sm font-semibold" style={{ color: "#F0FDF4" }}>{item.q}</span>
-                        {isOpen
-                          ? <ChevronUp size={16} style={{ color: "#07644D", flexShrink: 0 }} />
-                          : <ChevronDown size={16} style={{ color: "#8A9EA0", flexShrink: 0 }} />
-                        }
+                        <span className="flex-1 text-sm font-medium" style={{ color: "#0A0A0A" }}>{item.q}</span>
+                        <span className="flex-shrink-0 text-xl font-light select-none" style={{ color: "#6B7280", lineHeight: 1 }}>
+                          {isOpen ? "−" : "+"}
+                        </span>
                       </button>
                       {isOpen && (
-                        <div className="px-5 pb-5 pt-0" style={{ borderTop: "1px solid #1C2C1C" }}>
-                          <p className="text-sm leading-relaxed mt-4" style={{ color: "#B0BBBF" }}>{item.a}</p>
+                        <div className="pb-5">
+                          <p className="text-sm leading-relaxed" style={{ color: "#4B5563" }}>{item.a}</p>
                         </div>
                       )}
                     </div>
