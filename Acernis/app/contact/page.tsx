@@ -1,6 +1,6 @@
 ﻿"use client";
 import { useState } from "react";
-import { Mail, ExternalLink, MapPin } from "lucide-react";
+import { ExternalLink, MapPin } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
 function Eyebrow({ children, color = "#07644D" }: { children: React.ReactNode; color?: string }) {
@@ -16,17 +16,27 @@ export default function ContactPage() {
   const { t } = useLanguage();
   const c = t.contact;
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [formData, setFormData] = useState({ name: "", company: "", email: "", message: "" });
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSent(true);
+    setSending(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) setSent(true);
+    } finally {
+      setSending(false);
+    }
   }
 
-  const contactMembers = (t.about.team.members as Array<{ name: string; role: string; email?: string }>)
-    .filter((m) => m.email);
 
   return (
-    <main className="pt-24">
+    <main className="pt-32">
       {/* Hero */}
       <section className="relative py-24 px-6 overflow-hidden" style={{ borderBottom: "1px solid #E5E7EB" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(7,100,77,0.06) 0%, transparent 60%)" }} />
@@ -56,16 +66,18 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-5 flex-1">
                 {[
-                  { key: "name", label: c.form.name, type: "text", placeholder: c.form.namePlaceholder },
-                  { key: "company", label: c.form.company, type: "text", placeholder: c.form.companyPlaceholder },
-                  { key: "email", label: c.form.email, type: "email", placeholder: c.form.emailPlaceholder },
+                  { key: "name" as const, label: c.form.name, type: "text", placeholder: c.form.namePlaceholder },
+                  { key: "company" as const, label: c.form.company, type: "text", placeholder: c.form.companyPlaceholder },
+                  { key: "email" as const, label: c.form.email, type: "email", placeholder: c.form.emailPlaceholder },
                 ].map((field) => (
                   <div key={field.key}>
                     <label className="block text-xs font-medium mb-2" style={{ color: "#B0BBBF" }}>{field.label}</label>
                     <input
                       type={field.type}
                       placeholder={field.placeholder}
-                      required
+                      required={field.key !== "company"}
+                      value={formData[field.key]}
+                      onChange={(e) => setFormData(prev => ({ ...prev, [field.key]: e.target.value }))}
                       className="w-full px-4 py-3 rounded-lg text-sm outline-none transition-all"
                       style={{ backgroundColor: "#131F13", border: "1px solid #1C2C1C", color: "#F0FDF4" }}
                       onFocus={(e) => { (e.target as HTMLElement).style.borderColor = "#07644D"; }}
@@ -79,6 +91,8 @@ export default function ContactPage() {
                     placeholder={c.form.messagePlaceholder}
                     required
                     rows={5}
+                    value={formData.message}
+                    onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
                     className="w-full px-4 py-3 rounded-lg text-sm outline-none transition-all resize-none flex-1"
                     style={{ backgroundColor: "#131F13", border: "1px solid #1C2C1C", color: "#F0FDF4" }}
                     onFocus={(e) => { (e.target as HTMLElement).style.borderColor = "#07644D"; }}
@@ -87,12 +101,13 @@ export default function ContactPage() {
                 </div>
                 <button
                   type="submit"
+                  disabled={sending}
                   className="w-full py-3.5 text-sm font-semibold rounded-lg transition-all mt-auto"
-                  style={{ backgroundColor: "#07644D", color: "#F0FDF4" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#055035"; }}
+                  style={{ backgroundColor: "#07644D", color: "#F0FDF4", opacity: sending ? 0.7 : 1 }}
+                  onMouseEnter={(e) => { if (!sending) (e.currentTarget as HTMLElement).style.backgroundColor = "#055035"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#07644D"; }}
                 >
-                  {c.form.send}
+                  {sending ? "Sending…" : c.form.send}
                 </button>
               </form>
             )}
@@ -121,29 +136,6 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Contact person */}
-            {contactMembers.map((member, i) => (
-              <div key={i} className="rounded-xl p-6" style={{ backgroundColor: "#0D130D", border: "1px solid #1C2C1C" }}>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ backgroundColor: "#0A3020", color: "#07644D" }}>
-                    {member.name.split(" ").map((n) => n[0]).join("")}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm" style={{ color: "#F0FDF4" }}>{member.name}</p>
-                    <p className="text-xs" style={{ color: "#8A9EA0" }}>{member.role}</p>
-                  </div>
-                </div>
-                <a
-                  href={`mailto:${member.email}`}
-                  className="flex items-center gap-2 text-sm transition-colors"
-                  style={{ color: "#B0BBBF" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#07644D"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#B0BBBF"; }}
-                >
-                  <Mail size={14} /> {member.email}
-                </a>
-              </div>
-            ))}
 
             {/* Address */}
             <div className="rounded-xl p-6 flex-1" style={{ backgroundColor: "#0D130D", border: "1px solid #1C2C1C" }}>

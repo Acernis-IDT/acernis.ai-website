@@ -1,8 +1,8 @@
 ﻿"use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { ArrowRight, Check, Database, Zap, Brain, ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, MoveRight, Check, Database, Zap, Brain, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 
@@ -12,8 +12,7 @@ const INVESTORS_BASE = [
   { name: "Arndt Rautenberg",   role: "Founder, Rautenberg & Co – TelCo M&A",            photo: "/picture_Arndt Rautenberg.png" },
   { name: "Dido Blankenburg",   role: "Former SVP Corp. Development, Deutsche Telekom",  photo: "/picture_Dido Blankenburg.png" },
   { name: "Niek Jan Van Damme", role: "Former Executive Board Member, Deutsche Telekom", photo: "/picture_Niek Jan Van Damme.png" },
-  { name: "Kai Uwe Ricke",      role: "Former CEO, Deutsche Telekom",                    photo: "/picture_Kai Uwe Ricke.png" },
-  { name: "Nicolas Drouet",     role: "Former Head of Presales, Ericsson – Seasoned CPO", photo: "/picture_Nicolas Drouet.png" },
+  { name: "Nicolas Drouet",     role: "Former Head of Presales, Ericsson", photo: "/picture_Nicolas Drouet.png" },
 ];
 
 function InvestorCard({ name, role, photo, quote }: typeof INVESTORS[0]) {
@@ -226,188 +225,150 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 
 export default function HomePage() {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const h = t.home;
   const [expandedUC, setExpandedUC] = useState<number | null>(null);
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [videoClicked, setVideoClicked] = useState(false);
-  const [deviceVideoOpacity, setDeviceVideoOpacity] = useState(1);
-  const deviceVideoRef = useRef<HTMLVideoElement>(null);
+  const bgVideoRef = useRef<HTMLVideoElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
 
-  const handleDeviceVideoTimeUpdate = useCallback(() => {
-    const v = deviceVideoRef.current;
-    if (v && v.duration && v.currentTime > v.duration - 0.5) {
-      setDeviceVideoOpacity(0);
-    }
-  }, []);
+  useEffect(() => {
+    let targetTime = 0;
+    let ticking = false;
 
-  const handleDeviceVideoEnded = useCallback(() => {
-    const v = deviceVideoRef.current;
-    if (!v) return;
-    v.currentTime = 0;
-    v.play().catch(() => {});
-    setTimeout(() => setDeviceVideoOpacity(1), 150);
+    const applyTime = () => {
+      const video = bgVideoRef.current;
+      if (video && video.readyState >= 2) {
+        if (typeof (video as any).fastSeek === "function") {
+          (video as any).fastSeek(targetTime);
+        } else {
+          video.currentTime = targetTime;
+        }
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      const video = bgVideoRef.current;
+      const section = heroRef.current;
+      if (!video || !section || !video.duration) return;
+      const maxScroll = section.offsetHeight - window.innerHeight;
+      if (maxScroll <= 0) return;
+      const scrolled = window.scrollY - section.offsetTop;
+      targetTime = Math.min(video.duration, Math.max(0, (scrolled / maxScroll) * video.duration));
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(applyTime);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <main>
       {/* ── HERO ── */}
       <section
-        className="relative flex flex-col overflow-hidden"
-        style={{ backgroundColor: "#06080A", minHeight: "100vh" }}
+        ref={heroRef}
+        style={{ height: "450vh", position: "relative" }}
       >
-        {/* Background: orbs + grid */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
-          <div className="animate-orb-1 absolute rounded-full" style={{ width: 700, height: 700, top: "-15%", left: "-10%", background: "radial-gradient(circle, rgba(7,100,77,0.18) 0%, transparent 70%)", filter: "blur(80px)" }} />
-          <div className="animate-orb-2 absolute rounded-full" style={{ width: 600, height: 600, bottom: "-10%", right: "-5%", background: "radial-gradient(circle, rgba(7,100,77,0.12) 0%, transparent 70%)", filter: "blur(80px)" }} />
-          <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(28,44,28,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(28,44,28,0.10) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-        </div>
-
-        {/* Text block – centered */}
-        <div className="relative z-10 pt-36 pb-10 px-6 md:px-16 max-w-4xl mx-auto w-full text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            className="font-bold leading-tight mb-6"
-            style={{
-              letterSpacing: "-0.03em",
-              fontSize: "clamp(2rem, 5vw, 4rem)",
-              color: "#F0FDF4",
+        <div
+          style={{
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            overflow: "hidden",
+          }}
+        >
+          {/* Background video – scroll-linked */}
+          <video
+            ref={bgVideoRef}
+            src="/Acernis%20Video%20ZoomOut_v3.mp4"
+            muted
+            playsInline
+            preload="auto"
+            onLoadedMetadata={() => {
+              const v = bgVideoRef.current;
+              if (v) v.currentTime = 0.001;
             }}
-          >
-            {lang === "de" ? (
-              <>Die <span style={{ color: "#0FA876" }}>KI-gestützte</span> Infrastrukturplattform<br />für Telco-Rollouts</>
-            ) : lang === "fr" ? (
-              <>La plateforme d&apos;infrastructure télécom<br /><span style={{ color: "#0FA876" }}>propulsée par l&apos;IA</span></>
-            ) : (
-              <>The <span style={{ color: "#0FA876" }}>AI-powered</span> telecom<br />infrastructure platform</>
-            )}
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-lg md:text-xl max-w-xl leading-relaxed mb-10 mx-auto"
-            style={{ color: "#B0BBBF" }}
-          >
-            {h.hero.body}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <Link
-              href="/contact"
-              className="btn-press inline-flex items-center gap-2 px-7 py-4 text-sm font-semibold rounded-lg"
-              style={{ backgroundColor: "#07644D", color: "#F0FDF4" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#055035"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#07644D"; }}
-            >
-              {h.hero.cta1} <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/case-study"
-              className="btn-press inline-flex items-center gap-2 px-7 py-4 text-sm font-medium rounded-lg"
-              style={{ color: "#B0BBBF", border: "1px solid rgba(28,44,28,0.9)" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#F0FDF4"; (e.currentTarget as HTMLElement).style.borderColor = "#0FA876"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#B0BBBF"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(28,44,28,0.9)"; }}
-            >
-              {h.hero.cta2}
-            </Link>
-          </motion.div>
-        </div>
-
-        {/* Device mockup – tilted screen with autoplay video */}
-        <div className="relative z-10 flex-1 flex items-end justify-center px-4 md:px-12 overflow-hidden">
-          <motion.div
-            initial={{ opacity: 0, y: 70 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
             style={{
+              position: "absolute",
+              inset: 0,
               width: "100%",
-              maxWidth: "960px",
-              transform: "perspective(1000px) rotateX(14deg) rotateY(-8deg) rotateZ(2deg)",
-              transformOrigin: "center bottom",
-              transformStyle: "preserve-3d",
+              height: "100%",
+              objectFit: "cover",
             }}
+          />
+
+          {/* Gradient overlay for text readability */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 45%, rgba(0,0,0,0.65) 100%)",
+              zIndex: 1,
+            }}
+          />
+
+          {/* Text content */}
+          <div
+            className="relative flex flex-col items-center justify-center text-center px-6"
+            style={{ height: "100%", zIndex: 10 }}
           >
-            {/* Screen frame */}
-            <div
+            <motion.h1
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+              className="font-bold leading-none mb-8"
               style={{
-                borderRadius: "14px 14px 0 0",
-                border: "1px solid rgba(15,168,118,0.28)",
-                borderBottom: "none",
-                overflow: "hidden",
-                boxShadow:
-                  "0 0 0 1px rgba(7,100,77,0.06), " +
-                  "0 -8px 40px rgba(7,100,77,0.18), " +
-                  "0 40px 80px rgba(0,0,0,0.7)",
-                background: "#060A06",
+                letterSpacing: "-0.04em",
+                fontSize: "clamp(3rem, 7.5vw, 6rem)",
+                color: "#F0FDF4",
+                maxWidth: "900px",
               }}
             >
-              {/* Browser chrome */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "10px 16px",
-                  borderBottom: "1px solid rgba(15,168,118,0.14)",
-                  background: "rgba(8,13,8,0.95)",
-                }}
-              >
-                <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "rgba(255,95,87,0.75)" }} />
-                <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "rgba(255,189,46,0.75)" }} />
-                <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "rgba(40,202,65,0.75)" }} />
-                <div
-                  style={{
-                    marginLeft: 12,
-                    height: 20,
-                    width: 220,
-                    borderRadius: 4,
-                    background: "rgba(7,100,77,0.07)",
-                    border: "1px solid rgba(15,168,118,0.12)",
-                  }}
-                />
-              </div>
+              The <span style={{ color: "#0FA876" }}>AI-powered</span> telecom<br />
+              infrastructure platform
+            </motion.h1>
 
-              {/* Video area */}
-              <div style={{ position: "relative", aspectRatio: "16/9" }}>
-                <video
-                  ref={deviceVideoRef}
-                  src="/3D Video_v2.mp4"
-                  muted
-                  playsInline
-                  autoPlay
-                  onTimeUpdate={handleDeviceVideoTimeUpdate}
-                  onEnded={handleDeviceVideoEnded}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    display: "block",
-                    opacity: deviceVideoOpacity,
-                    transition: "opacity 0.45s ease",
-                  }}
-                />
-                {/* Bottom vignette so it fades into the page bg */}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    pointerEvents: "none",
-                    background:
-                      "linear-gradient(to bottom, transparent 55%, rgba(6,10,6,0.65) 100%)",
-                  }}
-                />
-              </div>
-            </div>
-          </motion.div>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-base md:text-lg max-w-lg leading-relaxed mb-10 mx-auto"
+              style={{ color: "#C0CAD0" }}
+            >
+              {h.hero.body}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="flex justify-center"
+            >
+              <Link
+                href="/contact"
+                className="btn-press inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all"
+                style={{ backgroundColor: "#07644D", color: "#F0FDF4" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#055035"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "#07644D"; }}
+              >
+                Request Access <MoveRight size={12} />
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Scroll hint */}
+          <div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+            style={{ zIndex: 10, opacity: 0.45 }}
+          >
+            <span style={{ fontSize: 10, color: "#FFFFFF", letterSpacing: "0.12em", textTransform: "uppercase" }}>Scroll</span>
+            <ChevronDown size={14} style={{ color: "#FFFFFF" }} />
+          </div>
         </div>
       </section>
 
@@ -426,29 +387,6 @@ export default function HomePage() {
                 />
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PLATFORM INTRO ── */}
-      <section className="relative overflow-hidden" style={{ backgroundColor: "#FFFFFF", borderTop: "1px solid #E5E7EB", minHeight: "480px" }}>
-        <NetworkBackground />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.72) 50%, rgba(255,255,255,0.88) 100%)" }} />
-        <div className="relative z-10 max-w-5xl mx-auto px-6 py-28">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-16 items-stretch">
-            <div className="md:col-span-3 flex flex-col justify-center">
-              <Eyebrow>{h.platformIntro.eyebrow}</Eyebrow>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}>{h.platformIntro.title}</h2>
-              <p className="text-base leading-relaxed mb-6" style={{ color: "#4B5563" }}>{h.platformIntro.body}</p>
-              <p className="text-sm font-semibold leading-relaxed" style={{ color: "#07644D" }}>{h.platformIntro.closing}</p>
-            </div>
-            <div className="md:col-span-2 flex items-center">
-              <div className="relative md:pl-10 w-full">
-                <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px" style={{ backgroundColor: "rgba(7,100,77,0.3)" }} />
-                <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#07644D" }}>{h.platformIntro.futureTitle}</p>
-                <p className="text-base leading-relaxed" style={{ color: "#4B5563" }}>{h.platformIntro.futureBody}</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -505,10 +443,33 @@ export default function HomePage() {
             </div>
 
             <div className="card-glow rounded-2xl p-8 flex-1 flex flex-col items-center text-center" style={{ backgroundColor: "#0D0D0D", border: "1px solid rgba(7,100,77,0.25)", borderTop: "1px solid rgba(7,100,77,0.4)" }}>
-              <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-8" style={{ backgroundColor: "rgba(7,100,77,0.08)", color: "#0FA876", border: "1px solid rgba(7,100,77,0.25)" }}>{h.solution.card3Badge}</span>
+              <span className="inline-block px-3 py-1 text-xs font-medium rounded-full mb-8" style={{ backgroundColor: "#1F2937", color: "#6B7280", border: "1px solid rgba(107,114,128,0.2)" }}>{h.solution.card3Badge}</span>
               <BrainIcon />
               <h3 className="text-lg font-bold mb-3" style={{ color: "#F0FDF4" }}>{h.solution.card3Title}</h3>
               <p className="text-sm leading-relaxed" style={{ color: "#9CA3AF" }}>{h.solution.card3Body}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── PLATFORM INTRO ── */}
+      <section className="relative overflow-hidden" style={{ backgroundColor: "#FFFFFF", borderTop: "1px solid #E5E7EB", minHeight: "480px" }}>
+        <NetworkBackground />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.72) 50%, rgba(255,255,255,0.88) 100%)" }} />
+        <div className="relative z-10 max-w-5xl mx-auto px-6 py-28">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-16 items-stretch">
+            <div className="md:col-span-3 flex flex-col justify-center">
+              <Eyebrow>{h.platformIntro.eyebrow}</Eyebrow>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}>{h.platformIntro.title}</h2>
+              <p className="text-base leading-relaxed mb-6" style={{ color: "#4B5563" }}>{h.platformIntro.body}</p>
+              <p className="text-sm font-semibold leading-relaxed" style={{ color: "#07644D" }}>{h.platformIntro.closing}</p>
+            </div>
+            <div className="md:col-span-2 flex items-center">
+              <div className="relative md:pl-10 w-full">
+                <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px" style={{ backgroundColor: "rgba(7,100,77,0.3)" }} />
+                <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#07644D" }}>{h.platformIntro.futureTitle}</p>
+                <p className="text-base leading-relaxed" style={{ color: "#4B5563" }}>{h.platformIntro.futureBody}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -537,8 +498,21 @@ export default function HomePage() {
                   >
                     <span className="text-base font-mono font-bold w-10 flex-shrink-0" style={{ color: "#0FA876" }}>{uc_item.number}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-base font-semibold" style={{ color: "#F0FDF4" }}>{uc_item.title}</p>
-                      <p className="text-sm mt-0.5" style={{ color: "#9CA3AF" }}>{uc_item.short}</p>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="text-base font-semibold" style={{ color: "#F0FDF4" }}>{uc_item.title}</p>
+                        {uc_item.status && (
+                          <span
+                            className="px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0"
+                            style={uc_item.status === "Live"
+                              ? { backgroundColor: "#0A3020", color: "#0FA876", border: "1px solid rgba(7,100,77,0.3)" }
+                              : { backgroundColor: "#1F2937", color: "#6B7280", border: "1px solid rgba(107,114,128,0.2)" }
+                            }
+                          >
+                            {uc_item.status}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm" style={{ color: "#9CA3AF" }}>{uc_item.short}</p>
                     </div>
                     {isOpen
                       ? <ChevronUp size={18} style={{ color: "#07644D", flexShrink: 0 }} />
@@ -629,10 +603,13 @@ export default function HomePage() {
       </section>
 
       {/* ── KPIs ── */}
-      <section className="py-20 px-6" style={{ backgroundColor: "#F5F7F5", borderTop: "1px solid #E5E7EB" }}>
+      <section className="py-20 px-6" style={{ backgroundColor: "#0A0A0A" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <Eyebrow>Success KPIs</Eyebrow>
+            <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest" style={{ color: "#6B7280" }}>
+              <span className="w-4 h-px inline-block" style={{ backgroundColor: "#6B7280" }} />
+              success KPIs
+            </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3">
             {h.kpis.items.map((item, i) => (
@@ -646,55 +623,21 @@ export default function HomePage() {
                 >
                   <span
                     className="block text-6xl md:text-7xl font-bold mb-5 leading-none tracking-tight"
-                    style={{ color: "#07644D" }}
+                    style={{ color: "#0FA876" }}
                   >
                     {item.value}
                   </span>
-                  <p className="text-sm leading-relaxed max-w-[200px]" style={{ color: "#4B5563" }}>
+                  <p className="text-sm leading-relaxed max-w-[180px]" style={{ color: "#9CA3AF" }}>
                     {item.label}
                   </p>
                 </motion.div>
                 {i < h.kpis.items.length - 1 && (
                   <>
-                    <div className="md:hidden h-px w-3/4 mx-auto" style={{ backgroundColor: "#E5E7EB" }} />
-                    <div className="hidden md:block absolute right-0 inset-y-12 w-px" style={{ backgroundColor: "#E5E7EB" }} />
+                    <div className="md:hidden h-px w-3/4 mx-auto" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
+                    <div className="hidden md:block absolute right-0 inset-y-12 w-px" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
                   </>
                 )}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── INVESTORS ── */}
-      <section style={{ backgroundColor: "#0A0A0A", borderTop: "1px solid #1F2937", borderBottom: "1px solid #1F2937", paddingTop: 80, paddingBottom: 80, overflow: "hidden" }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          style={{ textAlign: "center", marginBottom: 52, padding: "0 24px" }}
-        >
-          <p style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 600, color: "#0FA876", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>
-            <span style={{ width: 16, height: 1, backgroundColor: "#0FA876", display: "inline-block" }} />
-            {h.investors.eyebrow}
-          </p>
-          <h2 style={{ color: "#F0FDF4", fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-            {h.investors.title}
-          </h2>
-        </motion.div>
-
-        <div
-          className="animate-marquee-wrap"
-          style={{
-            overflow: "hidden",
-            WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
-            maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
-          }}
-        >
-          <div className="animate-marquee" style={{ gap: 20, paddingLeft: 20 }}>
-            {[...INVESTORS_BASE, ...INVESTORS_BASE].map((inv, i) => (
-              <InvestorCard key={i} {...inv} quote={h.investorQuotes[i % INVESTORS_BASE.length]} />
             ))}
           </div>
         </div>
@@ -719,43 +662,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FAQ ── */}
-      <section className="py-24 px-6" style={{ backgroundColor: "#F5F7F5", borderTop: "1px solid #E5E7EB" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-14">
-            <Eyebrow>{h.faq.eyebrow}</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#0A0A0A" }}>{h.faq.title}</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 items-start">
-            {[h.faq.items.slice(0, Math.ceil(h.faq.items.length / 2)), h.faq.items.slice(Math.ceil(h.faq.items.length / 2))].map((col, colIdx) => (
-              <div key={colIdx} style={{ borderTop: "1px solid #D1D5DB" }}>
-                {col.map((item, idx) => {
-                  const i = colIdx === 0 ? idx : Math.ceil(h.faq.items.length / 2) + idx;
-                  const isOpen = expandedFaq === i;
-                  return (
-                    <div key={i} style={{ borderBottom: "1px solid #D1D5DB" }}>
-                      <button
-                        className="w-full flex items-center gap-4 py-5 text-left"
-                        onClick={() => setExpandedFaq(isOpen ? null : i)}
-                      >
-                        <span className="flex-1 text-sm font-medium" style={{ color: "#0A0A0A" }}>{item.q}</span>
-                        <span className="flex-shrink-0 text-xl font-light select-none" style={{ color: "#6B7280", lineHeight: 1 }}>
-                          {isOpen ? "−" : "+"}
-                        </span>
-                      </button>
-                      {isOpen && (
-                        <div className="pb-5">
-                          <p className="text-sm leading-relaxed" style={{ color: "#4B5563" }}>{item.a}</p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </main>
   );
 }

@@ -1,6 +1,6 @@
 export default function TermsAndConditionsPage() {
   return (
-    <main className="pt-24 pb-24 min-h-screen" style={{ backgroundColor: "#FFFFFF" }}>
+    <main className="pt-32 pb-24 min-h-screen" style={{ backgroundColor: "#FFFFFF" }}>
 
       {/* Header */}
       <section className="px-6 pt-12 pb-10" style={{ borderBottom: "1px solid #E5E7EB" }}>

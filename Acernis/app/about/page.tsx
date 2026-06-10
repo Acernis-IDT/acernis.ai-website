@@ -17,7 +17,7 @@ export default function AboutPage() {
   const a = t.about;
 
   return (
-    <main className="pt-24">
+    <main className="pt-32">
       {/* Hero */}
       <section className="relative py-28 px-6 overflow-hidden" style={{ borderBottom: "1px solid #E5E7EB" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(7,100,77,0.06) 0%, transparent 60%)" }} />
@@ -31,18 +31,6 @@ export default function AboutPage() {
               <p key={i} className="text-base leading-relaxed" style={{ color: "#4B5563" }}>{p}</p>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Belief – dark card */}
-      <section className="py-24 px-6" style={{ backgroundColor: "#0D0D0D", borderBottom: "1px solid #1F2937" }}>
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#0FA876" }}>
-            <span className="w-4 h-px inline-block" style={{ backgroundColor: "#0FA876" }} />
-            {a.mission.eyebrow}
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8" style={{ color: "#F0FDF4" }}>{a.mission.title}</h2>
-          <p className="text-base leading-relaxed" style={{ color: "#9CA3AF" }}>{a.mission.body}</p>
         </div>
       </section>
 

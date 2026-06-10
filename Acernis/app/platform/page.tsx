@@ -16,7 +16,7 @@ export default function PlatformPage() {
   const p = t.platform;
 
   return (
-    <main className="pt-24">
+    <main className="pt-32">
       {/* Hero */}
       <section className="relative py-28 px-6 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 20% 50%, rgba(7,100,77,0.08) 0%, transparent 60%)" }} />
