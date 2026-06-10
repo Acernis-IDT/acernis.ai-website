@@ -271,7 +271,7 @@ export default function HomePage() {
       {/* ── HERO ── */}
       <section
         ref={heroRef}
-        style={{ height: "450vh", position: "relative" }}
+        style={{ height: "450vh", position: "relative", overflow: "hidden" }}
       >
         <div
           style={{

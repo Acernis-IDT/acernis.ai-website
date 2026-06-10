@@ -65,13 +65,9 @@ export default function Navbar() {
       )}
 
       {/* Main nav */}
+      <div style={{ backgroundColor: "rgba(9,9,11,0.96)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
       <nav
         className="max-w-7xl mx-auto px-6 flex items-center justify-between h-14"
-        style={{
-          backgroundColor: "rgba(9,9,11,0.96)",
-          backdropFilter: "blur(16px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
       >
         <Link href="/" onClick={() => setOpen(false)} className="flex-shrink-0">
           <Image
@@ -123,6 +119,7 @@ export default function Navbar() {
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </nav>
+      </div>
 
       {/* Mobile menu */}
       {open && (
