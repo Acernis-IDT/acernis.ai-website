@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, MoveRight, Check, Database, Zap, Brain, ChevronDown, ChevronUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 
 
@@ -232,6 +232,16 @@ export default function HomePage() {
   const bgVideoRef = useRef<HTMLVideoElement>(null);
   const heroRef = useRef<HTMLElement>(null);
 
+  const CYCLING_WORDS = ["AI-powered", "up-to-date", "accurate", "accessible"];
+  const [wordIndex, setWordIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWordIndex((i) => (i + 1) % CYCLING_WORDS.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     let targetTime = 0;
     let ticking = false;
@@ -333,7 +343,21 @@ export default function HomePage() {
                 maxWidth: "900px",
               }}
             >
-              The <span style={{ color: "#0FA876" }}>AI-powered</span> telecom<br />
+              The{" "}
+              <span style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom" }}>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={wordIndex}
+                    initial={{ y: "100%", opacity: 0 }}
+                    animate={{ y: "0%", opacity: 1 }}
+                    exit={{ y: "-100%", opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.33, 1, 0.68, 1] }}
+                    style={{ color: "#0FA876", display: "inline-block" }}
+                  >
+                    {CYCLING_WORDS[wordIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>{" "}telecom<br />
               infrastructure platform
             </motion.h1>
 
@@ -344,7 +368,7 @@ export default function HomePage() {
               className="text-base md:text-lg max-w-lg leading-relaxed mb-10 mx-auto"
               style={{ color: "#C0CAD0" }}
             >
-              {h.hero.body}
+              Cut rollout delays. Control your costs.<br />Turn network strategy into field-ready execution, instantly.
             </motion.p>
 
             <motion.div
@@ -465,13 +489,6 @@ export default function HomePage() {
               <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: "#F0FDF4", textWrap: "balance" } as React.CSSProperties}>{h.platformIntro.title}</h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "#9CA3AF" }}>{h.platformIntro.body}</p>
               <p className="text-sm font-semibold leading-relaxed" style={{ color: "#0FA876" }}>{h.platformIntro.closing}</p>
-            </div>
-            <div className="md:col-span-2 flex items-center">
-              <div className="relative md:pl-10 w-full">
-                <div className="hidden md:block absolute left-0 top-0 bottom-0 w-px" style={{ backgroundColor: "rgba(7,100,77,0.4)" }} />
-                <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#07644D" }}>{h.platformIntro.futureTitle}</p>
-                <p className="text-base leading-relaxed" style={{ color: "#9CA3AF" }}>{h.platformIntro.futureBody}</p>
-              </div>
             </div>
           </div>
         </div>
