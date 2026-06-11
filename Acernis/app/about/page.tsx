@@ -1,5 +1,6 @@
 ﻿"use client";
 import Link from "next/link";
+import Image from "next/image";
 import { MoveRight } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
@@ -42,10 +43,22 @@ export default function AboutPage() {
             <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#0A0A0A" }}>{a.team.title}</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {a.team.members.map((member: { name: string; role: string }, i: number) => (
+            {a.team.members.map((member: { name: string; role: string; photo?: string }, i: number) => (
               <div key={i} className="rounded-xl p-6 text-center" style={{ backgroundColor: "#0D0D0D", border: "1px solid #1F2937" }}>
-                <div className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold mb-4 mx-auto" style={{ backgroundColor: "#0A3020", color: "#0FA876" }}>
-                  {member.name.split(" ").map((n) => n[0]).join("")}
+                <div className="w-16 h-16 rounded-full overflow-hidden mb-4 mx-auto" style={{ border: "1px solid #1F2937" }}>
+                  {member.photo ? (
+                    <Image
+                      src={member.photo}
+                      alt={member.name}
+                      width={64}
+                      height={64}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", filter: "grayscale(100%)" }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: "#0A3020", color: "#0FA876" }}>
+                      {member.name.split(" ").map((n: string) => n[0]).join("")}
+                    </div>
+                  )}
                 </div>
                 <h3 className="text-sm font-semibold mb-1" style={{ color: "#F0FDF4" }}>{member.name}</h3>
                 <p className="text-xs" style={{ color: "#9CA3AF" }}>{member.role}</p>
