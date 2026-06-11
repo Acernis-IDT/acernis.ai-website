@@ -55,9 +55,9 @@ const translations = {
         card2Title: "Automation Use Cases",
         card2Body: "A growing library of automation use cases, covering the rollout workflow end-to-end",
         arrow2Label: "scales to",
-        card3Badge: "Coming soon",
+        card3Badge: "Customization",
         card3Title: "AI-Driven Workflows",
-        card3Body: "AI Agents execute workflows at scale, while your teams supervise and steer outcomes",
+        card3Body: "Your teams steer high value outcomes, while AI Agents handle execution at scale",
       },
       howItWorks: {
         eyebrow: "How it works",
@@ -137,15 +137,15 @@ const translations = {
       },
       kpis: {
         items: [
-          { value: "10-15%", label: "cost reduction in network rollouts within the first year" },
-          { value: "2", label: "weeks to showcase your preferred use case" },
-          { value: "10+", label: "API integrations to your existing tools and systems" },
+          { value: "15%+", label: "cost reduction in the first year" },
+          { value: "6+", label: "months saved per macro site upgrade" },
+          { value: "10+", label: "existing APIs to connect your tools" },
         ],
       },
       cta: {
-        title: "Ready to run your next planning cycle on Acernis?",
+        title: "Deploy 8x faster!",
         subtitle: "Book a 30-minute call with our founder.",
-        cta1: "Request Access",
+        cta1: "Book a strategy session",
         cta2: "Read the Case Study",
       },
       faq: {

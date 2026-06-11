@@ -52,15 +52,18 @@ function InvestorCard({ name, role, photo, quote }: typeof INVESTORS[0]) {
   );
 }
 
-const LOGOS = [
-  { src: "/Vodafone_logo_grey.png",      alt: "Vodafone",      w: 120, h: 52 },
-  { src: "/VirginMediaO2_logo_grey.png", alt: "Virgin Media O2", w: 120, h: 52 },
-  { src: "/GFTD_logo_grey.png",          alt: "GfTD",          w: 120, h: 52 },
-  { src: "/EKS_logo_grey.png",           alt: "EKS",           w: 80,  h: 36 },
-  { src: "/Cablex_Logo.svg_grey.png",    alt: "Cablex",        w: 120, h: 52 },
-  { src: "/insyte_logo_grey.png",        alt: "Insyte",        w: 120, h: 52 },
-  { src: "/SPIE_logo.svg_grey.png",      alt: "SPIE",          w: 80,  h: 36 },
-  { src: "/Animo_logo_grey.png",         alt: "Animo",         w: 120, h: 52 },
+const LOGOS_OPERATORS = [
+  { src: "/Vodafone_logo_grey.png",      alt: "Vodafone",        w: 140, h: 60 },
+  { src: "/VirginMediaO2_logo_grey.png", alt: "Virgin Media O2", w: 140, h: 60 },
+];
+
+const LOGOS_ECOSYSTEM = [
+  { src: "/GFTD_logo_grey.png",       alt: "GfTD",   w: 110, h: 44 },
+  { src: "/EKS_logo_grey.png",        alt: "EKS",    w: 72,  h: 32 },
+  { src: "/Cablex_Logo.svg_grey.png", alt: "Cablex", w: 110, h: 44 },
+  { src: "/insyte_logo_grey.png",     alt: "Insyte", w: 110, h: 44 },
+  { src: "/SPIE_logo.svg_grey.png",   alt: "SPIE",   w: 72,  h: 32 },
+  { src: "/Animo_logo_grey.png",      alt: "Animo",  w: 110, h: 44 },
 ];
 
 function NetworkBackground() {
@@ -300,11 +303,11 @@ export default function HomePage() {
             playsInline
             autoPlay
             preload="auto"
+            onPlay={(e) => { e.currentTarget.pause(); }}
             onLoadedMetadata={() => {
               const v = bgVideoRef.current;
               if (!v) return;
-              // iOS requires play() to activate the video element before seeking works
-              v.play().then(() => { v.pause(); v.currentTime = 0.001; }).catch(() => { v.currentTime = 0.001; });
+              v.play().catch(() => { v.currentTime = 0.001; });
             }}
             style={{
               position: "absolute",
@@ -400,21 +403,46 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── LOGO STRIP ── */}
-      <section className="py-12 px-6" style={{ backgroundColor: "#F8FAF8", borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 sm:gap-6 items-center justify-items-center">
-            {LOGOS.map((logo) => (
-              <div key={logo.alt} className="w-full flex items-center justify-center">
+      {/* ── LOGO SECTIONS ── */}
+      <section style={{ backgroundColor: "#F8FAF8", borderTop: "1px solid #E5E7EB" }}>
+        {/* Operators */}
+        <div className="px-6 py-14" style={{ borderBottom: "1px solid #E5E7EB" }}>
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-10" style={{ color: "#9CA3AF" }}>
+              Trusted by Europe's Leading Operators
+            </p>
+            <div className="flex items-center justify-center gap-16 flex-wrap">
+              {LOGOS_OPERATORS.map((logo) => (
                 <Image
+                  key={logo.alt}
                   src={logo.src}
                   alt={logo.alt}
                   width={logo.w}
                   height={logo.h}
-                  style={{ width: "100%", height: "auto", maxWidth: `${logo.w}px` }}
+                  style={{ height: "auto", maxWidth: `${logo.w}px`, width: "auto" }}
                 />
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* Ecosystem */}
+        <div className="px-6 py-10" style={{ borderBottom: "1px solid #E5E7EB" }}>
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-8" style={{ color: "#9CA3AF" }}>
+              Integrated across the deployment ecosystem
+            </p>
+            <div className="flex items-center justify-center gap-10 flex-wrap">
+              {LOGOS_ECOSYSTEM.map((logo) => (
+                <Image
+                  key={logo.alt}
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={logo.w}
+                  height={logo.h}
+                  style={{ height: "auto", maxWidth: `${logo.w}px`, width: "auto", opacity: 0.75 }}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
