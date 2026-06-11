@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useState } from "react";
+import Image from "next/image";
 import { ExternalLink, MapPin } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
@@ -140,8 +141,14 @@ export default function ContactPage() {
             {/* Founder card */}
             <div className="rounded-xl p-6 flex flex-col gap-4" style={{ backgroundColor: "#0D130D", border: "1px solid #1C2C1C" }}>
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ backgroundColor: "#0A3020", color: "#07644D" }}>
-                  CR
+                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0" style={{ border: "1px solid #1C2C1C" }}>
+                  <Image
+                    src="/profile_Charles Ricke.png"
+                    alt="Charles Ricke"
+                    width={40}
+                    height={40}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
+                  />
                 </div>
                 <div>
                   <p className="font-semibold text-sm" style={{ color: "#F0FDF4" }}>Charles Ricke</p>
