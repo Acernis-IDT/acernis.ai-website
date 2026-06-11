@@ -252,7 +252,7 @@ const translations = {
           { name: "Charles Ricke",          role: "Founder & CEO",               photo: "/profile_Charles Ricke.png" },
           { name: "Charles-Ed. Laguérie",   role: "CFO",                         photo: "/profile_Charles-Ed. Laguérie.png" },
           { name: "Lars Krahnstöver",       role: "CRO",                         photo: "/profile_Lars Krahnstöver.png" },
-          { name: "Amaury Bannier",         role: "CPO",                         photo: "/profile_Amaury Bannier.png" },
+          { name: "Amaury Bannier",         role: "CPTO",                        photo: "/profile_Amaury Bannier.png" },
           { name: "Filip Wrzosek",          role: "COO",                         photo: "/profile_Filip Wrzosek.png" },
           { name: "Ricardo Machado",        role: "Head of Business Development", photo: "/profile_Ricardo Machado.png" },
           { name: "Aurélien Meunieur",      role: "Head of AI",                  photo: "/profile_Aurélien Meunieur.png" },
