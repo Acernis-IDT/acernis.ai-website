@@ -21,6 +21,23 @@ export default function CaseStudyPage() {
           >
             {cs.title}
           </h1>
+          <div className="rounded-2xl p-8" style={{ backgroundColor: "#F5F7F5", border: "1px solid #E5E7EB" }}>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "#07644D" }}>
+              {cs.aboutEyebrow}
+            </p>
+            <p className="text-base leading-relaxed mb-4" style={{ color: "#374151" }}>
+              {cs.aboutP1.includes("BearingPoint") ? (
+                <>
+                  {cs.aboutP1.split("BearingPoint")[0]}
+                  <strong style={{ color: "#0A0A0A" }}>BearingPoint</strong>
+                  {cs.aboutP1.split("BearingPoint")[1]}
+                </>
+              ) : cs.aboutP1}
+            </p>
+            <p className="text-base leading-relaxed" style={{ color: "#374151" }}>
+              {cs.aboutP2}
+            </p>
+          </div>
         </div>
       </section>
 
