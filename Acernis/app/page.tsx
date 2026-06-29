@@ -525,7 +525,7 @@ export default function HomePage() {
       </section>
 
       {/* ── USE CASES ── */}
-      <section className="py-28 px-6" style={{ backgroundColor: "#F5F7F5", borderTop: "1px solid #E5E7EB" }}>
+      <section id="use-cases" className="py-28 px-6" style={{ backgroundColor: "#F5F7F5", borderTop: "1px solid #E5E7EB" }}>
         <div className="max-w-3xl mx-auto">
           <div className="mb-14">
             <Eyebrow>{h.useCasesSection.eyebrow}</Eyebrow>

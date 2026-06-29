@@ -22,6 +22,7 @@ export default function Navbar() {
   const links = [
     { href: "/about", label: t.nav.about },
     { href: "/", label: t.nav.platform },
+    { href: "/bim-technology", label: "BIM Technology" },
     { href: "/case-study", label: t.nav.caseStudy },
     { href: "/contact", label: t.nav.contact },
   ];
