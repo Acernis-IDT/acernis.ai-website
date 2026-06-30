@@ -80,7 +80,7 @@ const translations = {
       },
       useCasesSection: {
         eyebrow: "Use Cases",
-        title: "Key use cases for efficient network rollout",
+        title: "Key use cases for efficient network rollout.",
         cta: "See all 10 use cases",
         items: [
           {
@@ -213,7 +213,7 @@ const translations = {
     useCases: {
       hero: {
         eyebrow: "Automation Use Cases",
-        title: "Key use cases for efficient network rollout",
+        title: "Key use cases for efficient network rollout.",
         subtitle: "10 BIM-based automation use cases spanning the full rollout workflow, from planning to compliance to design.",
       },
       cases: [

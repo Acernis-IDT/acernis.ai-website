@@ -39,7 +39,7 @@ export default function BIMTechnologyPage() {
               BIM is what makes everything else possible.
             </h1>
             <p className="text-base md:text-lg leading-relaxed mb-8" style={{ color: "#9CA3AF" }}>
-              Every network site holds critical data, but most of it lives in PDFs, spreadsheets and outdated drawings. Acernis turns each site into a structured, accurate, always-current digital asset that every workflow can depend on.
+              Every network site holds critical data, but most of it lives in PDFs, spreadsheets and outdated 2D drawings. Acernis turns each site into a structured, accurate, always-current 3D digital asset that every workflow can depend on.
             </p>
           </div>
           <div>
@@ -198,7 +198,7 @@ export default function BIMTechnologyPage() {
               {
                 Icon: Layers,
                 number: "01",
-                title: "BIM creation",
+                title: "BIM creation of your network sites",
                 desc: "We capture your sites and build accurate, standardized 3D BIM models, ready to use across all rollout workflows from day one.",
               },
               {
@@ -210,7 +210,7 @@ export default function BIMTechnologyPage() {
               {
                 Icon: BookOpen,
                 number: "03",
-                title: "Services, acquisition, consulting and BIM standards",
+                title: "BIM advisory and standards setup",
                 desc: "We help you set up BIM standards, onboard your team, and integrate BIM into your existing processes and toolchain.",
               },
             ].map(({ Icon, number, title, desc }, i) => (
@@ -244,7 +244,7 @@ export default function BIMTechnologyPage() {
             className="text-2xl md:text-3xl font-bold leading-tight mb-8"
             style={{ color: "#F0FDF4", letterSpacing: "-0.02em" }}
           >
-            &ldquo;An accurate BIM model is not the destination.<br className="hidden md:inline" /> It is what makes everything else possible.&rdquo;
+            &ldquo;An accurate BIM model is not the destination.{" "}<br className="hidden md:inline" />It is what makes everything else possible.&rdquo;
           </blockquote>
           <p className="text-base leading-relaxed mb-10" style={{ color: "#6B7280" }}>
             The Acernis platform runs 10 live automation use cases directly on top of BIM, spanning coverage planning, static and EMF assessments, concept design, detailed site design and more. All of them depend on the data foundation that BIM provides.
