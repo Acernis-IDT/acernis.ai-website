@@ -36,10 +36,10 @@ export default function BIMTechnologyPage() {
               className="text-4xl md:text-5xl font-bold mb-6 leading-tight"
               style={{ color: "#F0FDF4", letterSpacing: "-0.03em" }}
             >
-              BIM is what makes everything else possible.
+              BIM is what makes everything else possible
             </h1>
             <p className="text-base md:text-lg leading-relaxed mb-8" style={{ color: "#9CA3AF" }}>
-              Every network site holds critical data, but most of it lives in PDFs, spreadsheets and outdated 2D drawings. Acernis turns each site into a structured, accurate, always-current 3D digital asset that every workflow can depend on.
+              Every network site holds critical data, but most of it lives in PDFs, spreadsheets and outdated 2D drawings. Acernis applies BIM (Building Information Modeling) to turn each site into a structured, accurate, always-current 3D digital asset that every workflow can depend on.
             </p>
           </div>
           <div>
@@ -59,7 +59,7 @@ export default function BIMTechnologyPage() {
           <div>
             <Eyebrow>The bigger shift</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight" style={{ color: "#F0FDF4" }}>
-              BIM in construction, now in telecom.
+              BIM in construction, now in telecom
             </h2>
             <p className="text-base leading-relaxed mb-4" style={{ color: "#9CA3AF" }}>
               BIM transformed how buildings are designed and built, replacing fragmented 2D drawings with structured, version-controlled 3D models that every stakeholder works from. The same shift is now happening in telecom.
@@ -124,7 +124,7 @@ export default function BIMTechnologyPage() {
           <div className="text-center mb-16">
             <Eyebrow>What's inside</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-bold" style={{ color: "#F0FDF4" }}>
-              What a BIM model means for a telecom site.
+              What a BIM model means for a telecom site
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -190,7 +190,7 @@ export default function BIMTechnologyPage() {
               className="text-3xl md:text-4xl font-bold"
               style={{ color: "#0A0A0A", textWrap: "balance" } as React.CSSProperties}
             >
-              Three ways we build and maintain your BIM foundation.
+              Three ways we build and maintain your BIM foundation
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -244,7 +244,7 @@ export default function BIMTechnologyPage() {
             className="text-2xl md:text-3xl font-bold leading-tight mb-8"
             style={{ color: "#F0FDF4", letterSpacing: "-0.02em" }}
           >
-            &ldquo;An accurate BIM model is not the destination.{" "}<br className="hidden md:inline" />It is what makes everything else possible.&rdquo;
+            &ldquo;The quality of your network rollout is determined{" "}<br className="hidden md:inline" />by the quality of your site data.&rdquo;
           </blockquote>
           <p className="text-base leading-relaxed mb-10" style={{ color: "#6B7280" }}>
             The Acernis platform runs 10 live automation use cases directly on top of BIM, spanning coverage planning, static and EMF assessments, concept design, detailed site design and more. All of them depend on the data foundation that BIM provides.

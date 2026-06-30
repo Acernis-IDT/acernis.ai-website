@@ -38,7 +38,7 @@ const translations = {
       },
       platformIntro: {
         eyebrow: "The Acernis Platform",
-        title: "One web app for your whole network.",
+        title: "One web app for your whole network",
         body: "Acernis hosts your BIM-based digital twins, covering the key use cases for network planning and deployment. Use it directly in the browser, or connect it to your existing tools via API.",
         closing: "Your data stays yours. BIM models become accurate. Your rollouts move faster.",
         futureTitle: "Where we're headed",
@@ -71,7 +71,7 @@ const translations = {
       },
       platformSection: {
         eyebrow: "Platform",
-        title: "One web app for your whole network.",
+        title: "One web app for your whole network",
         body: "Acernis is the single place where your whole network team works: operators, planners, designers and contractors, all on the same data.",
         nativeAppsLabel: "Native apps for:",
         nativeApps: ["Structural Pre-Assessment", "EMF Pre-Assessment", "Line of Sight", "Concept Design", "Site Survey"],
@@ -80,7 +80,7 @@ const translations = {
       },
       useCasesSection: {
         eyebrow: "Use Cases",
-        title: "Key use cases for efficient network rollout.",
+        title: "Key use cases for efficient network rollout",
         cta: "See all 10 use cases",
         items: [
           {
@@ -130,7 +130,7 @@ const translations = {
       },
       videoSection: {
         eyebrow: "Product Walkthrough",
-        title: "See Acernis in action.",
+        title: "See Acernis in action",
         subtitle: "Watch how Acernis turns site data into deployment-ready rollout plans.",
         placeholder: "Click to play",
         comingSoon: "Video coming soon",
@@ -213,7 +213,7 @@ const translations = {
     useCases: {
       hero: {
         eyebrow: "Automation Use Cases",
-        title: "Key use cases for efficient network rollout.",
+        title: "Key use cases for efficient network rollout",
         subtitle: "10 BIM-based automation use cases spanning the full rollout workflow, from planning to compliance to design.",
       },
       cases: [
